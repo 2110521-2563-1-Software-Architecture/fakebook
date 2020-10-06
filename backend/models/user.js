@@ -20,10 +20,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     select: false,
   },
-  subscribed: {
-    type: Boolean,
-    required: true,
-  },
 });
 
 userSchema.plugin(uniqueValidator, {
