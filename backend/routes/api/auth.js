@@ -20,7 +20,10 @@ router.post("/login", (req, res) => {
           .status(401)
           .json(errorResponse({ message: "Incorrect username or password." }));
       } else {
-        const token = generateAccessToken({ username: req.body.username });
+        const token = generateAccessToken({
+          username: req.body.username,
+          _id: user._id.toString(),
+        });
         res.status(200).json({ access_token: token });
       }
     });

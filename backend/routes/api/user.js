@@ -4,6 +4,17 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/User");
 const { errorResponse } = require("../../utils/error");
+const { authenticateToken } = require("../../auth");
+
+// Get Current User
+router.get("/me", authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    res.json(user);
+  } catch (err) {
+    res.status(401).json(errorResponse(err));
+  }
+});
 
 // Create User
 router.post(
