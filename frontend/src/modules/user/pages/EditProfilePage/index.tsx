@@ -1,13 +1,25 @@
 import React, { useState, useEffect, ChangeEvent, useCallback } from "react";
 import Axios from "axios";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { isNil, isEmpty } from "lodash";
 import { getCurrentUser } from "modules/auth/selectors";
 import { User } from "common/types";
 import { emailRegex } from "common/constants";
-import { Card, Container, Input, Padded, Gap, Button } from "common/components";
+import {
+  Card,
+  Container,
+  Input,
+  Padded,
+  Gap,
+  Button,
+  SecondaryButton,
+  Flex,
+} from "common/components";
 import AppBar from "common/components/AppBar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 type FormValues = {
   fullname: string;
@@ -66,7 +78,15 @@ const EditProfilePage = () => {
     <>
       <AppBar />
       <Container>
-        <h1>Edit Profile</h1>
+        <Flex $align="center" $justify="center">
+          <Link to="/" style={{ flex: 1 }}>
+            <SecondaryButton>
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </SecondaryButton>
+          </Link>
+          <h1 style={{ flex: "100%", paddingLeft: "16px" }}>Edit Profile</h1>
+          <div style={{ flex: 1 }} />
+        </Flex>
         <Card>
           <Padded $size="16px">
             <Gap $size="16px">
