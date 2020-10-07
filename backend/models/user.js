@@ -9,17 +9,25 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     required: true,
   },
+  password: {
+    type: String,
+    required: true,
+    select: false,
+  },
+  fullname: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     unique: true,
     lowercase: true,
     required: true,
   },
-  password: {
+  photo: {
     type: String,
-    required: true,
-    select: false,
-  },
+    required: false
+  }
 });
 
 userSchema.plugin(uniqueValidator, {
