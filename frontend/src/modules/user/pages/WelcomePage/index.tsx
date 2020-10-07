@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Button, Container } from "common/components";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -7,22 +7,13 @@ import { User } from "common/types";
 import AppBar from "common/components/AppBar";
 
 const WelcomePage = () => {
-  //   const [currentUser, setCurrentUser] = useState<User | null>(null);
-
-  //   // Get Current User Details
-  //   useEffect(() => {
-  //     const getCurrentUserApi = async () => {
-  //       const res = (await useSelector(getCurrentUser)) as User;
-  //       setCurrentUser(res);
-  //     };
-  //     getCurrentUserApi();
-  //   }, []);
+  const currentUser = useSelector(getCurrentUser);
 
   return (
     <>
       <AppBar />
       <Container>
-        <h1>Hello</h1>
+        <h1>Hello, {currentUser?.fullname}</h1>
         <Link to="/user/edit">
           <Button>Edit Profile</Button>
         </Link>

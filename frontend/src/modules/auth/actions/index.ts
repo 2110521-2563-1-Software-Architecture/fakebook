@@ -1,5 +1,4 @@
 import { SET_AUTH, SET_CURRENT_USER } from "common/actionTypes";
-import Axios from "axios";
 
 export const login = () => async (dispatch) => {
   dispatch({

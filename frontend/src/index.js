@@ -5,7 +5,7 @@ import store from "common/store";
 import * as serviceWorker from "./serviceWorker";
 import App from "./App";
 import GlobalStyle from "common/styles/global";
-import initHttp from "common/http.js";
+import initHttp from "common/http";
 import "normalize.css/normalize.css";
 import "font.css";
 

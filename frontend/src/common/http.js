@@ -15,12 +15,10 @@ export default () => {
       return response;
     },
     function (err) {
+      console.log("err", err);
+      console.log("err.status", err.status);
       if (err.response) {
         store.dispatch(showError(err.response.data));
-      }
-      console.warn(err);
-      if (err.status === 401 || err.status === 403) {
-        store.dispatch(logout());
       }
       return Promise.reject(err);
     }

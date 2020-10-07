@@ -1,11 +1,11 @@
 import React, { useState, useEffect, ChangeEvent, useCallback } from "react";
 import Axios from "axios";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { setCurrentUser } from "modules/auth/actions";
+import { useSelector, useDispatch } from "react-redux";
 import Swal from "sweetalert2";
-import { isNil, isEmpty } from "lodash";
+import { isEmpty } from "lodash";
 import { getCurrentUser } from "modules/auth/selectors";
-import { User } from "common/types";
 import { emailRegex } from "common/constants";
 import {
   Card,
@@ -33,22 +33,16 @@ const disableButton = ({ fullname, email }: FormValues) => {
 };
 
 const EditProfilePage = () => {
+  const currentUser = useSelector(getCurrentUser);
+  const dispatch = useDispatch();
+
   const [fullname, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  // Get Current User Details
-  // const [currentUser, setCurrentUser] = useState<User | null>(null);
+
   useEffect(() => {
-    const getCurrentUserApi = async () => {
-      await Axios.get("/api/user/me").then((res) => {
-        if (res.data) {
-          const user = res.data;
-          if (user.fullname) setFullName(user.fullname);
-          if (user.email) setEmail(user.email);
-        }
-      });
-    };
-    getCurrentUserApi();
-  }, []);
+    if (currentUser?.fullname) setFullName(currentUser?.fullname);
+    if (currentUser?.email) setEmail(currentUser?.email);
+  }, [currentUser]);
 
   const editClick = useCallback(() => {
     Axios.put("/api/user/edit", {
@@ -62,6 +56,14 @@ const EditProfilePage = () => {
             text: "Your profile has been edited",
           });
         }
+        // Edit Current User in Redux Store
+        dispatch(
+          setCurrentUser({
+            ...currentUser,
+            fullname,
+            email,
+          })
+        );
       })
       .catch((err) => console.log(err));
   }, [fullname, email]);
