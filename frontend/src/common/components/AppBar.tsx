@@ -45,13 +45,13 @@ const StyledAppBar = () => {
       <Container>
         <Flex $justify="space-between" $align="center" style={{ flex: 1 }}>
           <div style={{ flex: 1 }}>
-            <Link to="/add-party">
+            <Link to="/add-post">
               <SmallButton>
                 <FontAwesomeIcon icon={faPlus} />
               </SmallButton>
             </Link>
           </div>
-          <AppBarText>ปาร์ตี้ทั้งหมด</AppBarText>
+          <AppBarText>Fakebook</AppBarText>
           <AppBarItemRight>
             <SecondaryButton onClick={logoutClick}>
               <FontAwesomeIcon icon={faSignOutAlt} />

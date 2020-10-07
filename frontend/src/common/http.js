@@ -19,7 +19,7 @@ export default () => {
         store.dispatch(showError(err.response.data));
       }
       console.warn(err);
-      if (err.status === 401) {
+      if (err.status === 401 || err.status === 403) {
         store.dispatch(logout());
       }
       return Promise.reject(err);

@@ -5,6 +5,7 @@ import PublicRoute from "common/routes/PublicRoute";
 import LoginPage from "modules/user/pages/LoginPage";
 import RegisterPage from "modules/user/pages/RegisterPage";
 import WelcomePage from "modules/user/pages/WelcomePage";
+import EditProfilePage from "modules/user/pages/EditProfilePage";
 
 const AppRouter = () => {
   return (
@@ -16,6 +17,9 @@ const AppRouter = () => {
         <PublicRoute path="/register">
           <RegisterPage />
         </PublicRoute>
+        <PrivateRoute path="/user/edit">
+          <EditProfilePage />
+        </PrivateRoute>
         <PrivateRoute path="/">
           <WelcomePage />
         </PrivateRoute>

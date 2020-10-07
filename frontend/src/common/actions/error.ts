@@ -3,10 +3,10 @@ import Swal from "sweetalert2";
 
 export const showError = (error) => {
   Swal.fire({
-    title: "เกิดข้อผิดพลาด",
+    title: "An Error Occurred",
     text: typeof error?.errors?.message
       ? error?.errors?.message
-      : "กรุณาลองใหม่อีกครั้ง",
+      : "Please type again later.",
     icon: "error",
     showCloseButton: false,
     showCancelButton: false,

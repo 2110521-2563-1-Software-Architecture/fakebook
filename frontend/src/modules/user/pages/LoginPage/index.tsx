@@ -5,6 +5,7 @@ import { Redirect, Link } from "react-router-dom";
 import { getAuthState } from "modules/auth/selectors";
 import { useAuth } from "modules/auth/hooks";
 import { isNil, isEmpty } from "lodash";
+import { FullWidth } from "modules/user/styled";
 import {
   Container,
   Card,
@@ -14,18 +15,6 @@ import {
   Button,
   Flex,
 } from "common/components";
-
-const FullWidth = styled(Flex)`
-  width: 100%;
-  max-width: 400px;
-  min-height: 100vh;
-  overflow-y: auto;
-  overflow-x: initial;
-  margin: auto;
-  padding: 32px 4px;
-  box-sizing: border-box;
-  text-align: center;
-`;
 
 const disableButton = (username: string, password: string) => {
   if (isEmpty(username) || isEmpty(password)) return true;

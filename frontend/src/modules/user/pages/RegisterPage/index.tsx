@@ -17,7 +17,7 @@ import {
   SecondaryButton,
   Flex,
 } from "common/components";
-import { FullWidth } from "./styled";
+import { FullWidth } from "modules/user/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
