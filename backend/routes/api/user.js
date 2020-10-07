@@ -51,14 +51,10 @@ router.post(
 );
 
 // Edit User Infomation
-router.put("/edit", authenticateToken, async (req, res) => {
+router.put("/edit", [authenticateToken], async (req, res) => {
   try {
     const data = {
-      $set: {
-        fullname: req.body.fullname,
-        email: req.body.email,
-        photo: req.body.photo,
-      },
+      $set: req.body,
     };
     await User.findByIdAndUpdate(req.user._id, data, { new: true });
     res.json({ success: true });

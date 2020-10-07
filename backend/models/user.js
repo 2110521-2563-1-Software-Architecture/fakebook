@@ -26,8 +26,8 @@ const userSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
-    required: false
-  }
+    required: false,
+  },
 });
 
 userSchema.plugin(uniqueValidator, {
