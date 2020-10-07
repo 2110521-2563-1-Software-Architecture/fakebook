@@ -2,10 +2,9 @@ import React from "react";
 import { Switch, BrowserRouter as Router } from "react-router-dom";
 import PrivateRoute from "common/routes/PrivateRoute";
 import PublicRoute from "common/routes/PublicRoute";
-import LoginPage from "pages/LoginPage";
-import AddPartyPage from "pages/AddPartyPage";
-import RegisterPage from "pages/RegisterPage";
-import PartyListPage from "pages/PartyListPage";
+import LoginPage from "modules/user/pages/LoginPage";
+import RegisterPage from "modules/user/pages/RegisterPage";
+import WelcomePage from "modules/user/pages/WelcomePage";
 
 const AppRouter = () => {
   return (
@@ -17,11 +16,8 @@ const AppRouter = () => {
         <PublicRoute path="/register">
           <RegisterPage />
         </PublicRoute>
-        <PrivateRoute path="/add-party">
-          <AddPartyPage />
-        </PrivateRoute>
         <PrivateRoute path="/">
-          <PartyListPage />
+          <WelcomePage />
         </PrivateRoute>
       </Switch>
     </Router>

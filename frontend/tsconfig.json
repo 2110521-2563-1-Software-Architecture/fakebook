@@ -14,12 +14,12 @@
       "esnext",
       "dom"
     ],
+    "baseUrl": "src",
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "baseUrl": "src"
+    "isolatedModules": true
   },
   "extends": "./base-tsconfig.json",
   "include": [

@@ -1,7 +1,8 @@
-import { SET_AUTH } from "common/actionTypes";
+import { SET_AUTH, SET_CURRENT_USER } from "common/actionTypes";
 
 const initialState = {
   loggedIn: undefined,
+  currentUser: null,
 };
 
 export default function (state = initialState, action) {
@@ -11,6 +12,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loggedIn: value,
+      };
+    }
+    case SET_CURRENT_USER: {
+      const { user } = action.payload;
+      return {
+        ...state,
+        currentUser: user,
       };
     }
     default:

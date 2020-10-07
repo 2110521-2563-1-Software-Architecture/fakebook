@@ -23,7 +23,7 @@ router.post(
     body("username").notEmpty(),
     body("email").isEmail(),
     body("password").notEmpty(),
-    body("fullname").notEmpty()
+    body("fullname").notEmpty(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -38,12 +38,12 @@ router.post(
       password: bcrypt.hashSync(req.body.password, salt),
       fullname: req.body.fullname,
       email: req.body.email,
-      photo: req.body.photo
+      photo: req.body.photo,
     });
 
     try {
       const newUser = await user.save();
-      res.status(201).json({ success: true, _id: newUser._id});
+      res.status(201).json({ success: true, _id: newUser._id });
     } catch (err) {
       res.status(400).json(errorResponse(err));
     }
@@ -57,11 +57,11 @@ router.put("/edit", authenticateToken, async (req, res) => {
       $set: {
         fullname: req.body.fullname,
         email: req.body.email,
-        photo: req.body.photo
-      }
-    }
-    const user = await User.findByIdAndUpdate(req.user._id, data, {new: true});
-    res.json({success: true});
+        photo: req.body.photo,
+      },
+    };
+    await User.findByIdAndUpdate(req.user._id, data, { new: true });
+    res.json({ success: true });
   } catch (err) {
     res.status(400).json(errorResponse(err));
   }

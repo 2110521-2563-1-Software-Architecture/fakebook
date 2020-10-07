@@ -7,7 +7,7 @@ import Button from "./Button";
 import Flex from "./Flex";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useAuth } from "hooks/auth";
+import { useAuth } from "modules/auth/hooks";
 
 const AppBarText = styled.h2`
   margin: auto;

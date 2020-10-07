@@ -3,16 +3,17 @@ import Axios from "axios";
 import {
   login as loginAction,
   logout as logoutAction,
-} from "common/actions/auth";
+} from "modules/auth/actions";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
   const login = (username: String, password: String) => {
-    Axios.post("/users/login", {
+    Axios.post("/api/auth/login", {
       username,
       password,
     })
-      .then(() => {
+      .then((res) => {
+        localStorage.setItem("at", res.data.access_token);
         dispatch(loginAction());
       })
       .catch(() => {
@@ -20,13 +21,8 @@ export const useAuth = () => {
       });
   };
   const logout = () => {
-    Axios.post("/users/logout")
-      .then(() => {
-        dispatch(logoutAction());
-      })
-      .catch(() => {
-        dispatch(logoutAction());
-      });
+    localStorage.removeItem("at");
+    dispatch(logoutAction());
   };
 
   return {

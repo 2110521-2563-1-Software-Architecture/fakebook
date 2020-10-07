@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Redirect, Route } from "react-router-dom";
-import { getAuthState } from "common/selectors";
+import { getAuthState } from "modules/auth/selectors";
 import { isNil } from "lodash";
 
 const PrivateRoute = (props) => {

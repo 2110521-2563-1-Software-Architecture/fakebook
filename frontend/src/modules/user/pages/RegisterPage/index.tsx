@@ -1,11 +1,12 @@
 import React, { useState, useCallback, ChangeEvent } from "react";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { isNil, isEmpty } from "lodash";
-import { useAuth } from "hooks/auth";
-import { getAuthState } from "common/selectors";
+import Axios from "axios";
+import { emailRegex } from "common/constants";
+import { useAuth } from "modules/auth/hooks";
+import { getAuthState } from "modules/auth/selectors";
 import {
   Container,
   Card,
@@ -16,40 +17,39 @@ import {
   SecondaryButton,
   Flex,
 } from "common/components";
+import { FullWidth } from "./styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import Axios from "axios";
 
-const FullWidth = styled(Flex)`
-  width: 100%;
-  max-width: 400px;
-  min-height: 100vh;
-  overflow-y: auto;
-  overflow-x: initial;
-  margin: auto;
-  padding: 32px 4px;
-  box-sizing: border-box;
-  text-align: center;
-`;
+type FormValues = {
+  fullname: string;
+  username: string;
+  password: string;
+  email: string;
+};
 
-const disableButton = (
-  agree: boolean,
-  username: string,
-  password: string,
-  email: string
-) => {
-  if (!agree || isEmpty(username) || isEmpty(password) || isEmpty(email))
+// Validation
+const disableButton = ({ fullname, username, password, email }: FormValues) => {
+  if (
+    isEmpty(fullname) ||
+    isEmpty(username) ||
+    isEmpty(password) ||
+    !emailRegex.test(email)
+  )
     return true;
   return false;
 };
 
 const RegisterPage = () => {
   const { login } = useAuth();
+  const [fullname, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-  const [agree, setAgree] = useState(false);
+
+  const changeFullName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setFullName(e.target.value);
+  }, []);
 
   const changeUsername = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -63,24 +63,16 @@ const RegisterPage = () => {
     setPassword(e.target.value);
   }, []);
 
-  const changeSubscribed = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setSubscribed(e.target.checked);
-  }, []);
-
-  const changeAgree = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setAgree(e.target.checked);
-  }, []);
-
   const submit = useCallback(() => {
-    Axios.post("/users", {
-      username,
-      email,
+    Axios.post("/api/user/register", {
+      username: username.toLowerCase(),
+      email: email.toLowerCase(),
       password,
-      subscribed,
+      fullname,
     }).then(() => {
       login(username, password);
     });
-  }, [username, email, password, subscribed]);
+  }, [username, email, password, fullname]);
 
   const isLoggedIn = useSelector(getAuthState);
   if (isNil(isLoggedIn)) return null;
@@ -97,7 +89,7 @@ const RegisterPage = () => {
                 <FontAwesomeIcon icon={faArrowLeft} />
               </SecondaryButton>
             </Link>
-            <h1 style={{ flex: "100%" }}>สร้างบัญชีผู้ใช้</h1>
+            <h1 style={{ flex: "100%" }}>Create an Account</h1>
             <div style={{ flex: 1 }} />
           </Flex>
           <Card>
@@ -105,55 +97,46 @@ const RegisterPage = () => {
               <Gap $size="48px">
                 <Gap $size="16px">
                   <Input
-                    label="ชื่อผู้ใช้"
+                    label="Full Name"
                     type="text"
-                    placeholder="ชื่อผู้ใช้"
+                    placeholder="Full Name"
+                    value={fullname}
+                    onChange={changeFullName}
+                  />
+                  <Input
+                    label="Username"
+                    type="text"
+                    placeholder="Username"
                     value={username}
                     onChange={changeUsername}
                   />
                   <Input
-                    label="อีเมล"
+                    label="Email"
                     type="email"
-                    placeholder="อีเมล"
+                    placeholder="Email"
                     value={email}
                     onChange={changeEmail}
                   />
                   <Input
-                    label="รหัสผ่าน"
+                    label="Password"
                     type="password"
-                    placeholder="รหัสผ่าน"
+                    placeholder="Password"
                     value={password}
                     onChange={changePassword}
                   />
-                  <Flex $align="center" $space="8px">
-                    <input
-                      type="checkbox"
-                      onChange={changeAgree}
-                      checked={agree}
-                    />
-                    <span style={{ textAlign: "left" }}>
-                      ฉันยอมรับเงื่อนไขและข้อตกลงเกี่ยวกับการใช้งาน PartyHaan
-                      รวมถึงนโยบายความเป็นส่วนตัว
-                    </span>
-                  </Flex>
-                  <Flex $align="center" $space="8px">
-                    <input
-                      type="checkbox"
-                      onChange={changeSubscribed}
-                      checked={subscribed}
-                    />
-                    <span style={{ textAlign: "left" }}>
-                      ฉันต้องการรับข่าวสารเกี่ยวกับโปรโมชั่นจาก PartyHaan
-                    </span>
-                  </Flex>
                 </Gap>
                 <Button
                   $size="large"
                   $fullwidth
                   onClick={submit}
-                  disabled={disableButton(agree, username, password, email)}
+                  disabled={disableButton({
+                    fullname,
+                    username,
+                    password,
+                    email,
+                  })}
                 >
-                  สร้างบัญชีผู้ใช้
+                  Create an Account
                 </Button>
               </Gap>
             </Padded>

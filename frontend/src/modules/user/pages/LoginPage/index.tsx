@@ -2,8 +2,8 @@ import React, { useState, useCallback, ChangeEvent } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { Redirect, Link } from "react-router-dom";
-import { getAuthState } from "common/selectors";
-import { useAuth } from "hooks/auth";
+import { getAuthState } from "modules/auth/selectors";
+import { useAuth } from "modules/auth/hooks";
 import { isNil, isEmpty } from "lodash";
 import {
   Container,
@@ -59,21 +59,21 @@ const LoginPage = () => {
     <Container>
       <FullWidth $align="center" $justify="center">
         <Gap $size="32px" $fullwidth>
-          <h1>เข้าสู่ระบบ</h1>
+          <h1>Login</h1>
           <Card>
             <Padded $size="16px">
               <Gap $size="16px">
                 <Input
-                  label="ชื่อผู้ใช้"
+                  label="Username"
                   type="text"
-                  placeholder="ชื่อผู้ใช้"
+                  placeholder="Username"
                   value={username}
                   onChange={changeUsername}
                 />
                 <Input
-                  label="รหัสผ่าน"
+                  label="Password"
                   type="password"
-                  placeholder="รหัสผ่าน"
+                  placeholder="Password"
                   value={password}
                   onChange={changePassword}
                 />
@@ -82,14 +82,14 @@ const LoginPage = () => {
                   onClick={loginClick}
                   disabled={disableButton(username, password)}
                 >
-                  เข้าสู่ระบบ
+                  Login
                 </Button>
               </Gap>
             </Padded>
           </Card>
           <Link to="/register">
             <Button $size="large" $fullwidth>
-              สร้างบัญชีผู้ใช้
+              Create an Account
             </Button>
           </Link>
         </Gap>

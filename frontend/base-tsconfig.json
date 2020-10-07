@@ -3,8 +3,7 @@
     "baseUrl": ".",
     "paths": {
       "pages/*": ["pages/*"],
-      "common/*": ["common/*"],
-      "hooks/*": ["hooks/*"]
+      "modules/*": ["modules/*"]
     }
   }
 }
