@@ -20,6 +20,7 @@ import {
 import AppBar from "common/components/AppBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { narrow } from "common/styles/container";
 
 type FormValues = {
   fullname: string;
@@ -79,7 +80,7 @@ const EditProfilePage = () => {
   return (
     <>
       <AppBar />
-      <Container>
+      <Container $maxWidth={narrow}>
         <Flex $align="center" $justify="center">
           <Link to="/" style={{ flex: 1 }}>
             <SecondaryButton>

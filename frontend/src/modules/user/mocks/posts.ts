@@ -8,12 +8,10 @@ export const postSet1 = [
     postId: "1",
     content: "I am beautiful",
     time: "2020-10-25",
-    media: "https://picsum.photos/id/1/500",
   },
   {
     username: "jane",
     fullname: "JaneJane",
-    avatar: "https://picsum.photos/id/1005/200",
     postId: "2",
     content: "I am also beautiful",
     time: "2020-10-24",

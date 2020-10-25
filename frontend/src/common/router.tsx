@@ -4,7 +4,7 @@ import PrivateRoute from "common/routes/PrivateRoute";
 import PublicRoute from "common/routes/PublicRoute";
 import LoginPage from "modules/user/pages/LoginPage";
 import RegisterPage from "modules/user/pages/RegisterPage";
-import WelcomePage from "modules/user/pages/WelcomePage";
+import TimelinePage from "modules/user/pages/TimelinePage";
 import EditProfilePage from "modules/user/pages/EditProfilePage";
 
 const AppRouter = () => {
@@ -17,11 +17,17 @@ const AppRouter = () => {
         <PublicRoute path="/register">
           <RegisterPage />
         </PublicRoute>
+        <PrivateRoute path="/add-post">
+          <div />
+        </PrivateRoute>
         <PrivateRoute path="/user/edit">
           <EditProfilePage />
         </PrivateRoute>
+        <PrivateRoute path="/:username">
+          <TimelinePage />
+        </PrivateRoute>
         <PrivateRoute path="/">
-          <WelcomePage />
+          <TimelinePage />
         </PrivateRoute>
       </Switch>
     </Router>

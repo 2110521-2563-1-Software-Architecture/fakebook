@@ -22,7 +22,7 @@ const Post = ({
 }: PostProps) => {
   return (
     <Card>
-      <img src={media} style={{ width: "100%" }} />
+      {media && <img src={media} style={{ width: "100%" }} />}
       <Padded $all="32px">
         <Padded $bottom="8px">
           <Flex $space="16px" $align="center">

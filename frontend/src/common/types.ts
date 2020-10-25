@@ -1,8 +1,9 @@
 export type User = {
+  _id?: string;
   username: string;
-  email: string;
+  email?: string;
   fullname: string;
-  avatar: string;
+  avatar?: string;
 };
 
 export type Post = {

@@ -6,7 +6,7 @@ export const showError = (error) => {
     title: "An Error Occurred",
     text: typeof error?.errors?.message
       ? error?.errors?.message
-      : "Please type again later.",
+      : "Please try again later.",
     icon: "error",
     showCloseButton: false,
     showCancelButton: false,

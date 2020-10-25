@@ -16,6 +16,20 @@ router.get("/me", authenticateToken, async (req, res) => {
   }
 });
 
+// Get a User's Public Information
+router.get("/:username", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username });
+    res.json({
+      _id: user._id,
+      username: user.username,
+      fullname: user.fullname,
+    });
+  } catch (err) {
+    res.status(400).json(errorResponse(err));
+  }
+});
+
 // Create User
 router.post(
   "/register",
