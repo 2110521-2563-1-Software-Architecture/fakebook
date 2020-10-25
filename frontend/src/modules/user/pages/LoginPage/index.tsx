@@ -50,7 +50,7 @@ const LoginPage = () => {
         <Gap $size="32px" $fullwidth>
           <h1>Login</h1>
           <Card>
-            <Padded $size="16px">
+            <Padded $all="16px">
               <Gap $size="16px">
                 <Input
                   label="Username"

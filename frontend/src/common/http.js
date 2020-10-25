@@ -1,7 +1,6 @@
 import Axios from "axios";
 import store from "common/store";
 import { showError } from "common/actions/error";
-import { logout } from "modules/auth/actions";
 
 export default () => {
   Axios.defaults.headers.common["Content-Type"] = "application/json";

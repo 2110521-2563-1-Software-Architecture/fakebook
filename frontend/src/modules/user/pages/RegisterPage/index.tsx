@@ -93,7 +93,7 @@ const RegisterPage = () => {
             <div style={{ flex: 1 }} />
           </Flex>
           <Card>
-            <Padded $size="16px">
+            <Padded $all="16px">
               <Gap $size="48px">
                 <Gap $size="16px">
                   <Input
