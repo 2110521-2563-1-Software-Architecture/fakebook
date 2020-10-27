@@ -4,6 +4,15 @@ const { body, validationResult } = require("express-validator");
 const Post = require("../../models/post");
 const SharedPost = require("../../models/sharedPost");
 const { errorResponse } = require("../../utils/error");
+const Multer = require('multer');
+const gcsMiddlewares = require('../../middlewares/googleCloudStorage');
+	
+const multer = Multer({
+  storage: Multer.MemoryStorage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // Maximum file size is 10MB
+  },
+});
 
 router.post(
   "/new",
@@ -13,6 +22,8 @@ router.post(
     body("dateTime").notEmpty(),
     body("fullname").notEmpty(),
     body("content").if(body("media").notEmpty()).notEmpty(),
+    multer.single("media"),
+    gcsMiddlewares.sendUploadToGCS,
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -20,7 +31,14 @@ router.post(
       return res.status(400).json(errorResponse(errors.array()));
     }
 
-    // TODO: Upload Media
+    //Upload Media
+    const url = '';
+    if (req.file && req.file.gcsUrl){
+      url = req.file.gcsUrl;
+    }else{
+      return res.status(500).send('Unable to upload');
+    }
+
     const post = new Post({
       userId: req.body.userId,
       username: req.body.username,
@@ -28,7 +46,7 @@ router.post(
       avatar: req.body.avatar,
       content: req.body.content,
       dateTime: req.body.dateTime,
-      // media: req.body.media,
+      media: url,
     });
 
     try {
