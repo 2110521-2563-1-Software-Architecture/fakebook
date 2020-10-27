@@ -1,5 +1,5 @@
 export type User = {
-  _id?: string;
+  _id: string;
   username: string;
   email?: string;
   fullname: string;
@@ -7,17 +7,27 @@ export type User = {
 };
 
 export type Post = {
+  _id: string;
   username: string;
   fullname: string;
   avatar?: string;
-  postId: string;
+  dateTime: string;
   content: string;
-  time: string;
   media?: string;
-  sourcePostId?: string;
-  sourceUsername?: string;
-  sourceFullname?: string;
+};
+
+export type SharedPost = {
+  _id: string;
+  username: string;
+  fullname: string;
+  avatar?: string;
+  dateTime: string;
+  content?: string;
+  sourcePostId: string;
+  sourceUsername: string;
+  sourceFullname: string;
   sourceAvatar?: string;
-  sourceContent?: string;
+  sourceDateTime: Date;
+  sourceContent: string;
   sourceMedia?: string;
 };
