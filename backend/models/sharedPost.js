@@ -1,53 +1,62 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const uniqueValidator = require("mongoose-unique-validator");
 
-const regularPostSchema = new mongoose.Schema({
-    username: {
-      type: String,
-      unique: true,
-      lowercase: true,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-      select: false,
-    },
-    fullname: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      unique: true,
-      lowercase: true,
-      required: true,
-    },
-    avatar: {
-      type: String,
-      required: false,
-    },
-    dateTime: {
-        type: Date,
-        required: true,
-    },
-    content: {
-      type: String,
-      required: false,
-    },
-    sourceUserId: {
-      type: String,
-      required: true 
-    },
-    sourceUserId: {
-      type: String,
-      required: true 
-    },
-    sourcePostId: {
-      type: String,
-      required: true 
-    }
+const SharedPostSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    lowercase: true,
+    required: true,
+  },
+  fullname: {
+    type: String,
+    required: true,
+  },
+  avatar: {
+    type: String,
+    required: false,
+  },
+  content: {
+    type: String,
+    required: false,
+  },
+  dateTime: {
+    type: Date,
+    required: true,
+  },
+  media: {
+    type: String,
+    required: false,
+  },
+  sourcePostId: {
+    type: String,
+    lowercase: true,
+    required: true,
+  },
+  sourceUsername: {
+    type: String,
+    lowercase: true,
+    required: true,
+  },
+  sourceFullname: {
+    type: String,
+    required: true,
+  },
+  sourceAvatar: {
+    type: String,
+    required: false,
+  },
+  sourceContent: {
+    type: String,
+    required: false,
+  },
+  sourceDateTime: {
+    type: Date,
+    required: true,
+  },
+  sourceMedia: {
+    type: String,
+    required: false,
+  },
 });
-  
-module.exports = mongoose.model("RegularPost", regularPostSchema);
+
+// TODO Pls check the collection name whether it is the same as that of sharedPost
+module.exports = mongoose.model("SharedPostSchema", SharedPostSchema);
