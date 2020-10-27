@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const PostSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true,
+  },
   username: {
     type: String,
     lowercase: true,
@@ -28,5 +32,5 @@ const PostSchema = new mongoose.Schema({
   },
 });
 
-// TODO Pls check the collection name whether it is the same as that of sharedPost
-module.exports = mongoose.model("PostSchema", postSchema);
+
+module.exports = mongoose.model("PostSchema", postSchema, "posts");
