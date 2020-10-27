@@ -43,7 +43,7 @@ router.post(
     }
 
     //Upload Media
-    const url = '';
+    let url = '';
     if (req.file && req.file.gcsUrl){
       url = req.file.gcsUrl;
     }else{
