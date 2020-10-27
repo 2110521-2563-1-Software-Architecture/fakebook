@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/user");
@@ -67,6 +68,15 @@ router.post(
 // Edit User Infomation
 router.put("/edit", [authenticateToken], async (req, res) => {
   try {
+    if (req.body._id !== req.user._id) {
+      res.status(401).json(
+        errorResponse({
+          message: "You are not allowed to perform this action.",
+        })
+      );
+      return;
+    }
+
     const data = {
       $set: req.body,
     };
@@ -76,6 +86,22 @@ router.put("/edit", [authenticateToken], async (req, res) => {
     res.status(400).json(errorResponse(err));
   }
   // TODO: Edit user information in posts
+});
+
+// Get posts of a user
+router.get("/posts/:userId", async (req, res) => {
+  try {
+    await mongoose.connection.db
+      .collection("posts")
+      .find({ userId: req.params.userId })
+      .toArray()
+      .then((posts) => {
+        res.status(200).json({ posts });
+      });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(errorResponse(err));
+  }
 });
 
 module.exports = router;
