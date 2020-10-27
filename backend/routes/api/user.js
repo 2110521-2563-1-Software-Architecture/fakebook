@@ -75,6 +75,7 @@ router.put("/edit", [authenticateToken], async (req, res) => {
   } catch (err) {
     res.status(400).json(errorResponse(err));
   }
+  // TODO: Edit user information in posts
 });
 
 module.exports = router;
