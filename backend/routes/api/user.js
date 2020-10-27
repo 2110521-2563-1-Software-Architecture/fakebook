@@ -24,6 +24,7 @@ router.get("/:username", async (req, res) => {
       _id: user._id,
       username: user.username,
       fullname: user.fullname,
+      avatar: user.avatar,
     });
   } catch (err) {
     res.status(400).json(errorResponse(err));
@@ -52,7 +53,7 @@ router.post(
       password: bcrypt.hashSync(req.body.password, salt),
       fullname: req.body.fullname,
       email: req.body.email,
-      photo: req.body.photo,
+      avatar: req.body.avatar,
     });
 
     try {
