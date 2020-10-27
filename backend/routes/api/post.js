@@ -13,10 +13,12 @@ const multer = Multer({
     fileSize: 10 * 1024 * 1024, // Maximum file size is 10MB
   },
 });
+const { authenticateToken } = require("../../auth");
 
 router.post(
   "/new",
   [
+    authenticateToken,
     body("userId").notEmpty(),
     body("username").notEmpty(),
     body("dateTime").notEmpty(),
@@ -29,6 +31,15 @@ router.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json(errorResponse(errors.array()));
+    }
+
+    if (req.user._id !== req.body.userId) {
+      res.status(401).json(
+        errorResponse({
+          message: "You are not allowed to perform this action.",
+        })
+      );
+      return;
     }
 
     //Upload Media
@@ -61,6 +72,7 @@ router.post(
 router.post(
   "/share/:postId",
   [
+    authenticateToken,
     body("userId").notEmpty(),
     body("username").notEmpty(),
     body("fullname").notEmpty(),
@@ -70,6 +82,15 @@ router.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json(errorResponse(errors.array()));
+    }
+
+    if (req.user._id !== req.body.userId) {
+      res.status(401).json(
+        errorResponse({
+          message: "You are not allowed to perform this action.",
+        })
+      );
+      return;
     }
 
     try {
