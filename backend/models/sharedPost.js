@@ -28,19 +28,26 @@ const regularPostSchema = new mongoose.Schema({
       type: String,
       required: false,
     },
+    dateTime: {
+        type: Date,
+        required: true,
+    },
     content: {
       type: String,
-      required: true,
-    },
-    dateTime: {
-      type: Date,
-      required: true,
-    },
-    media: {
-      type: String,
       required: false,
+    },
+    sourceUserId: {
+      type: String,
+      required: true 
+    },
+    sourceUserId: {
+      type: String,
+      required: true 
+    },
+    sourcePostId: {
+      type: String,
+      required: true 
     }
 });
-
-// TODO Pls check the collection name whether it is the same as that of sharedPost
+  
 module.exports = mongoose.model("RegularPost", regularPostSchema);
