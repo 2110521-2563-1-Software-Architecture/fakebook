@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const uniqueValidator = require("mongoose-unique-validator");
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -30,12 +28,4 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-UserSchema.plugin(uniqueValidator, {
-  type: "",
-  message: "That {PATH} is already taken.",
-});
-UserSchema.methods.validPassword = function (password) {
-  return bcrypt.compareSync(password, this.password);
-};
-
-module.exports = mongoose.model("User", UserSchema);
+module.exports = UserSchema;

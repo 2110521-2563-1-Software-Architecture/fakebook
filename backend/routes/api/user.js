@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
-const User = require("../../models/User");
+const User = require("../../controllers/user");
 const { errorResponse } = require("../../utils/error");
 const { authenticateToken } = require("../../auth");
 
@@ -19,7 +19,7 @@ router.get("/me", authenticateToken, async (req, res) => {
 // Get a User's Public Information
 router.get("/:username", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.params.username });
+    const user = await User.findByUsername(req.params.username);
     res.json({
       _id: user._id,
       username: user.username,
@@ -46,11 +46,11 @@ router.post(
       return res.status(400).json(errorResponse(errors.array()));
     }
 
-    const salt = bcrypt.genSaltSync();
+    const salt = User.genSalt();
 
     const user = new User({
       username: req.body.username,
-      password: bcrypt.hashSync(req.body.password, salt),
+      password: User.getHashPassword(req.body.password, salt),
       fullname: req.body.fullname,
       email: req.body.email,
       avatar: req.body.avatar,
