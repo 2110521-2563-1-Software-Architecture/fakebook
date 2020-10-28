@@ -43,14 +43,16 @@ const AddPostPage = ({ callback }: { callback?: (Post) => void }) => {
       content,
       dateTime: dayjs(),
     };
-    Axios.post("/api/post/new", post).then(() => {
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-      });
-      if (callback) callback(post);
-      setContent("");
-    });
+    Axios.post("/api/post/new", post)
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+        });
+        if (callback) callback(post);
+        setContent("");
+      })
+      .catch(() => {});
   }, [currentUser, content]);
 
   return (
