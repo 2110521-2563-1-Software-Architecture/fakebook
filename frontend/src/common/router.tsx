@@ -17,13 +17,10 @@ const AppRouter = () => {
         <PublicRoute path="/register">
           <RegisterPage />
         </PublicRoute>
-        <PrivateRoute path="/add-post">
-          <div />
-        </PrivateRoute>
         <PrivateRoute path="/user/edit">
           <EditProfilePage />
         </PrivateRoute>
-        <PrivateRoute path="/:username">
+        <PrivateRoute path="/user/:username">
           <TimelinePage />
         </PrivateRoute>
         <PrivateRoute path="/">

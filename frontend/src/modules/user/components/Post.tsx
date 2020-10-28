@@ -1,45 +1,64 @@
 import React from "react";
-import dayjs from "dayjs";
-import { Card, Flex, Padded, Avatar, Link, Paragraph } from "common/components";
-import colors from "common/styles/colors";
+import { Card, Box, Padded, Button } from "common/components";
+import PostContent from "./PostContent";
 
 type PostProps = {
+  username: string;
+  fullname: string;
+  avatar?: string;
+  dateTime: string;
+  content?: string;
   media?: string;
-  content: string;
-  posterAvatar?: string;
-  posterName: string;
-  posterUsername: string;
-  time: string;
+  sourcePostId?: string;
+  sourceUsername?: string;
+  sourceFullname?: string;
+  sourceAvatar?: string;
+  sourceDateTime?: string;
+  sourceContent?: string;
+  sourceMedia?: string;
 };
 
 const Post = ({
-  media,
+  username,
+  fullname,
+  avatar,
+  dateTime,
   content,
-  posterAvatar,
-  posterName,
-  posterUsername,
-  time,
+  media,
+  sourcePostId,
+  sourceUsername,
+  sourceFullname,
+  sourceAvatar,
+  sourceDateTime,
+  sourceContent,
+  sourceMedia,
 }: PostProps) => {
   return (
     <Card>
-      {media && <img src={media} style={{ width: "100%" }} />}
-      <Padded $all="32px">
-        <Padded $bottom="8px">
-          <Flex $space="16px" $align="center">
-            <Link to={`/user/${posterUsername}`}>
-              <Avatar $url={posterAvatar} $rounded $size="48px" />
-            </Link>
-            <Link to={`/user/${posterUsername}`}>
-              <h3>{posterName}</h3>
-            </Link>
-          </Flex>
+      <PostContent
+        username={username}
+        fullname={fullname}
+        avatar={avatar}
+        dateTime={dateTime}
+        content={content}
+        media={sourcePostId ? undefined : media}
+      />
+      {sourcePostId && (
+        <Padded $all="16px" $top="0">
+          <Box>
+            <PostContent
+              username={sourceUsername}
+              fullname={sourceFullname}
+              avatar={sourceAvatar}
+              dateTime={sourceDateTime}
+              content={sourceContent}
+              media={sourceMedia}
+            />
+          </Box>
         </Padded>
-        <Padded $bottom="16px">
-          <p style={{ color: colors.gray[500] }}>
-            {dayjs(time).format("DD/MM/YYYY")}
-          </p>
-        </Padded>
-        <Paragraph>{content}</Paragraph>
+      )}
+      <Padded $all="16px" $top="0">
+        <Button>Share</Button>
       </Padded>
     </Card>
   );

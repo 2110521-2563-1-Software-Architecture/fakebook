@@ -8,26 +8,18 @@ export type User = {
 
 export type Post = {
   _id: string;
-  username: string;
-  fullname: string;
-  avatar?: string;
-  dateTime: string;
-  content: string;
-  media?: string;
-};
-
-export type SharedPost = {
-  _id: string;
+  postId?: string;
   username: string;
   fullname: string;
   avatar?: string;
   dateTime: string;
   content?: string;
+  media?: string;
   sourcePostId: string;
   sourceUsername: string;
   sourceFullname: string;
   sourceAvatar?: string;
-  sourceDateTime: Date;
+  sourceDateTime: string;
   sourceContent: string;
   sourceMedia?: string;
 };

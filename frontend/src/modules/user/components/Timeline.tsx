@@ -13,12 +13,19 @@ const Timeline = ({ posts }: TimelineProps) => {
       {posts.map((post, i) => (
         <PostComponent
           key={`post${i}`}
-          media={post.sourceMedia || post.media}
-          content={post.sourceContent || post.content}
-          posterName={post.sourceFullname || post.fullname}
-          posterUsername={post.sourceUsername || post.username}
-          posterAvatar={post.sourceAvatar || post.avatar}
-          time={post.time}
+          content={post.content}
+          fullname={post.fullname}
+          username={post.username}
+          avatar={post.avatar}
+          dateTime={post.dateTime}
+          media={post.media}
+          sourcePostId={post.sourcePostId}
+          sourceContent={post.sourceContent}
+          sourceFullname={post.sourceFullname}
+          sourceUsername={post.sourceUsername}
+          sourceAvatar={post.sourceAvatar}
+          sourceDateTime={post.sourceDateTime}
+          sourceMedia={post.sourceMedia}
         />
       ))}
     </Gap>
