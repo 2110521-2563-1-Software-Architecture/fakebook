@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { showDateTime } from "common/date";
 import { Flex, Padded, Avatar, Link, Paragraph } from "common/components";
 import colors from "common/styles/colors";
 
 type PostContentProps = {
+  postId?: string;
   username?: string;
   fullname?: string;
   avatar?: string;
@@ -13,6 +14,7 @@ type PostContentProps = {
 };
 
 const PostContent = ({
+  postId,
   username,
   fullname,
   avatar,

@@ -8,7 +8,7 @@ export type User = {
 
 export type Post = {
   _id: string;
-  postId?: string;
+  postId: string;
   username: string;
   fullname: string;
   avatar?: string;

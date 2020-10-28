@@ -1,14 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Axios from "axios";
-import {
-  Container,
-  Padded,
-  AppBar,
-  Flex,
-  Gap,
-  Avatar,
-} from "common/components";
-import { Link, useParams } from "react-router-dom";
+import { Container, Padded, AppBar, Gap, Avatar } from "common/components";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getCurrentUser } from "modules/auth/selectors";
 import { User } from "common/types";
@@ -33,7 +26,7 @@ const TimelinePage = () => {
           console.log(err);
         });
     }
-  }, []);
+  }, [usernameParam]);
 
   const currentUser = useSelector(getCurrentUser);
   const isMyPage = usernameParam

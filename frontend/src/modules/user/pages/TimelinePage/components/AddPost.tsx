@@ -9,7 +9,6 @@ import {
   Card,
   Textarea,
   Padded,
-  Gap,
   Button,
   Flex,
   Avatar,

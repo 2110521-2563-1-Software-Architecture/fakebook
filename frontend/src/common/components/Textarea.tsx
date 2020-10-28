@@ -12,7 +12,7 @@ const Textarea = styled.textarea`
   border: none;
   border: 1px solid ${colors.gray[300]};
   border-radius: 8px;
-  min-height: 150px;
+  min-height: 100px;
   width: 100%;
   outline: none !important;
   transition: border-bottom-color 0.3s ease;
