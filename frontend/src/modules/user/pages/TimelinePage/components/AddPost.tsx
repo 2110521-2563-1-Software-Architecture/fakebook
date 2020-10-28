@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { isEmpty } from "lodash";
 import { getCurrentUser } from "modules/auth/selectors";
+import { Post } from "common/types";
 import {
   Card,
   Textarea,
@@ -25,7 +26,7 @@ const disableButton = ({ content }: FormValues) => {
   return false;
 };
 
-const AddPostPage = () => {
+const AddPostPage = ({ callback }: { callback?: (Post) => void }) => {
   const currentUser = useSelector(getCurrentUser);
 
   const [content, setContent] = useState("");
@@ -35,18 +36,21 @@ const AddPostPage = () => {
   };
 
   const postSubmit = useCallback(() => {
-    Axios.post("/api/post/new", {
+    const post = {
       userId: currentUser._id,
       username: currentUser.username,
       fullname: currentUser.fullname,
       avatar: currentUser.avatar,
       content,
       dateTime: dayjs(),
-    }).then(() => {
+    };
+    Axios.post("/api/post/new", post).then(() => {
       Swal.fire({
         icon: "success",
         title: "Success",
       });
+      if (callback) callback(post);
+      setContent("");
     });
   }, [currentUser, content]);
 

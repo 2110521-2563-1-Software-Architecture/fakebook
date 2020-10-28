@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Axios from "axios";
 import {
   Container,
@@ -51,6 +51,14 @@ const TimelinePage = () => {
     getPosts();
   }, [currentUser]);
 
+  const addPost = useCallback(
+    (post) => {
+      const appendList = [post, ...posts];
+      setPosts(appendList);
+    },
+    [currentUser, posts]
+  );
+
   return (
     <>
       <AppBar />
@@ -75,7 +83,7 @@ const TimelinePage = () => {
           </Padded>
           {isMyPage && (
             <Padded $bottom="32px">
-              <AddPost />
+              <AddPost callback={addPost} />
             </Padded>
           )}
           <Timeline posts={posts} />

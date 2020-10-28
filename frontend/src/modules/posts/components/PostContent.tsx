@@ -1,5 +1,5 @@
 import React from "react";
-import dayjs from "dayjs";
+import { showDateTime } from "common/date";
 import { Flex, Padded, Avatar, Link, Paragraph } from "common/components";
 import colors from "common/styles/colors";
 
@@ -33,9 +33,7 @@ const PostContent = ({
             </Link>
           </Flex>
         </Padded>
-        <p style={{ color: colors.gray[500] }}>
-          {dayjs(dateTime).format("DD/MM/YYYY")}
-        </p>
+        <p style={{ color: colors.gray[500] }}>{showDateTime(dateTime)}</p>
         <Paragraph>{content}</Paragraph>
         {media && (
           <Padded $top="16px">
