@@ -47,6 +47,7 @@ const EditProfilePage = () => {
 
   const editClick = useCallback(() => {
     Axios.put("/api/user/edit", {
+      _id: currentUser?._id,
       fullname,
       email,
     })
