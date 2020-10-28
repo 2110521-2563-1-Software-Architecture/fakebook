@@ -108,14 +108,14 @@ router.put("/edit", [authenticateToken], async (req, res) => {
 });
 
 // Get posts of a user
-router.get("/posts/:userId", async (req, res) => {
+router.get("/posts/:username", async (req, res) => {
   try {
     await mongoose.connection.db
       .collection("posts")
-      .find({ userId: req.params.userId })
+      .find({ username: req.params.username })
       .toArray()
       .then((posts) => {
-        res.status(200).json({ posts });
+        res.status(200).json({ posts: posts.reverse() });
       });
   } catch (err) {
     console.log(err);
