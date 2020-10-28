@@ -14,35 +14,38 @@ const TimelinePage = () => {
   const { username: usernameParam } = useParams();
   const [posts, setPosts] = useState<Post[]>([]);
   const [displayingUser, setDisplayingUser] = useState<User | undefined>();
+
+  const currentUser = useSelector(getCurrentUser);
+
+  const isMyPage = usernameParam
+    ? usernameParam === currentUser?.username
+    : true;
+
   useEffect(() => {
+    // Get User
     if (usernameParam) {
       Axios.get(`/api/user/${usernameParam}`)
-        .then((req) => {
-          if (req.data) {
-            setDisplayingUser(req.data);
+        .then((res) => {
+          if (res.data) {
+            setDisplayingUser(res.data);
           }
         })
         .catch((err) => {
           console.log(err);
         });
     }
-  }, [usernameParam]);
 
-  const currentUser = useSelector(getCurrentUser);
-  const isMyPage = usernameParam
-    ? usernameParam === currentUser?.username
-    : true;
-
-  useEffect(() => {
     // Get Posts
     const getPosts = async () => {
       const res = await Axios.get(
         `/api/user/posts/${usernameParam || currentUser?.username}`
       );
-      setPosts(res.data.posts);
+      if (res.data) {
+        setPosts(res.data.posts);
+      }
     };
     getPosts();
-  }, [currentUser]);
+  }, [usernameParam, currentUser]);
 
   const addPost = useCallback(
     (post) => {
