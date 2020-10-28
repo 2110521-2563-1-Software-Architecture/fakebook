@@ -96,7 +96,7 @@ router.get("/posts/:username", async (req, res) => {
       .find({ username: req.params.username })
       .toArray()
       .then((posts) => {
-        res.status(200).json({ posts });
+        res.status(200).json({ posts: posts.reverse() });
       });
   } catch (err) {
     console.log(err);
