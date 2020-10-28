@@ -97,7 +97,6 @@ router.post(
       const sourcePost = await Post.findById(req.params.postId);
       console.log(sourcePost);
       if (sourcePost) {
-        // TODO: Upload Media
         const post = new SharedPost({
           userId: req.body.userId,
           username: req.body.username,

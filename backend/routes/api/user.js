@@ -5,6 +5,15 @@ const { body, validationResult } = require("express-validator");
 const User = require("../../models/user");
 const { errorResponse } = require("../../utils/error");
 const { authenticateToken } = require("../../auth");
+const Multer = require('multer');
+const gcsMiddlewares = require('../../middlewares/googleCloudStorage');
+	
+const multer = Multer({
+  storage: Multer.MemoryStorage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // Maximum file size is 10MB
+  },
+});
 
 // Get Current User
 router.get("/me", authenticateToken, async (req, res) => {
@@ -39,6 +48,8 @@ router.post(
     body("email").isEmail(),
     body("password").notEmpty(),
     body("fullname").notEmpty(),
+    multer.single("avatar"),
+    gcsMiddlewares.sendUploadToGCS,
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -48,12 +59,20 @@ router.post(
 
     const salt = User.genSalt();
 
+     //Upload Media
+     let url = '';
+     if (req.file && req.file.gcsUrl){
+       url = req.file.gcsUrl;
+     }else{
+       return res.status(500).send('Unable to upload');
+     }
+
     const user = new User({
       username: req.body.username,
       password: User.getHashPassword(req.body.password, salt),
       fullname: req.body.fullname,
       email: req.body.email,
-      avatar: req.body.avatar,
+      avatar: url,
     });
 
     try {
