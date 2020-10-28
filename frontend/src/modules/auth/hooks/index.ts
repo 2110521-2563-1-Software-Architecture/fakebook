@@ -20,7 +20,7 @@ export const useAuth = () => {
         initHttp();
 
         dispatch(loginAction());
-        Axios.get(`/api/user/${username}`).then((res) => {
+        Axios.get(`/api/user/me`).then((res) => {
           dispatch(setCurrentUser(res.data));
         });
       })
