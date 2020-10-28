@@ -4,10 +4,10 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/user");
 const { errorResponse } = require("../../utils/error");
-const { authenticateToken } = require("../../auth");
-const Multer = require('multer');
-const gcsMiddlewares = require('../../middlewares/googleCloudStorage');
-	
+const { authenticateToken } = require("../../middlewares/auth");
+const Multer = require("multer");
+const gcsMiddlewares = require("../../middlewares/googleCloudStorage");
+
 const multer = Multer({
   storage: Multer.MemoryStorage,
   limits: {
@@ -59,13 +59,15 @@ router.post(
 
     const salt = User.genSalt();
 
-     //Upload Media
-     let url = '';
-     if (req.file && req.file.gcsUrl){
-       url = req.file.gcsUrl;
-     }else{
-       return res.status(500).send('Unable to upload');
-     }
+    //Upload Media
+    let url = null;
+    if (req.file) {
+      if (req.file.gcsUrl) {
+        url = req.file.gcsUrl;
+      } else {
+        return res.status(500).send("Unable to upload");
+      }
+    }
 
     const user = new User({
       username: req.body.username,
@@ -85,27 +87,41 @@ router.post(
 );
 
 // Edit User Infomation
-router.put("/edit", [authenticateToken], async (req, res) => {
-  try {
-    if (req.body._id !== req.user._id) {
-      res.status(401).json(
-        errorResponse({
-          message: "You are not allowed to perform this action.",
-        })
-      );
-      return;
-    }
+router.put(
+  "/edit",
+  [authenticateToken, multer.single("avatar"), gcsMiddlewares.sendUploadToGCS],
+  async (req, res) => {
+    try {
+      if (req.body._id !== req.user._id) {
+        res.status(401).json(
+          errorResponse({
+            message: "You are not allowed to perform this action.",
+          })
+        );
+        return;
+      }
 
-    const data = {
-      $set: req.body,
-    };
-    await User.findByIdAndUpdate(req.user._id, data, { new: true });
-    res.json({ success: true });
-  } catch (err) {
-    res.status(400).json(errorResponse(err));
+      //Upload Media
+      let url = null;
+      if (req.file) {
+        if (req.file.gcsUrl) {
+          url = req.file.gcsUrl;
+        } else {
+          return res.status(500).send("Unable to upload");
+        }
+      }
+
+      const data = {
+        $set: req.body,
+      };
+      await User.findByIdAndUpdate(req.user._id, data, { new: true });
+      res.json({ success: true });
+    } catch (err) {
+      res.status(400).json(errorResponse(err));
+    }
+    // TODO: Edit user information in posts
   }
-  // TODO: Edit user information in posts
-});
+);
 
 // Get posts of a user
 router.get("/posts/:username", async (req, res) => {

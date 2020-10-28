@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../../models/user");
 const { errorResponse } = require("../../utils/error");
-const { generateAccessToken } = require("../../auth");
+const { generateAccessToken } = require("../../middlewares/auth");
 
 router.post("/login", (req, res) => {
   var username = req.body.username;
