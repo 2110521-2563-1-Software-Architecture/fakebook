@@ -1,6 +1,6 @@
 import React from "react";
 import { Post } from "common/types";
-import PostComponent from "modules/user/components/Post";
+import PostComponent from "modules/posts/components/Post";
 import { Gap } from "common/components";
 
 type TimelineProps = {

@@ -12,7 +12,7 @@ import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getCurrentUser } from "modules/auth/selectors";
 import { User } from "common/types";
-import Timeline from "modules/user/components/Timeline";
+import Timeline from "./components/Timeline";
 import { narrow } from "common/styles/container";
 import { Post } from "common/types";
 import AddPost from "./components/AddPost";
