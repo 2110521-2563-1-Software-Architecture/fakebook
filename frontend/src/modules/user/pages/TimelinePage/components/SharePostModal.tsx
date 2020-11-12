@@ -59,12 +59,7 @@ const SharePostModal = () => {
       <Padded $all="16px">
         <Padded $bottom="16px">
           <Flex $space="16px" $align="center">
-            <Avatar
-              $url={currentUser?.avatar}
-              $rounded
-              $size="48px"
-              style={{ marginBottom: 0 }}
-            />
+            <Avatar $src={currentUser?.avatar} $rounded $size="48px" />
             <h3>{currentUser?.fullname}</h3>
           </Flex>
         </Padded>

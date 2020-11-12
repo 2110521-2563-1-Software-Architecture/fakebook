@@ -65,10 +65,9 @@ const TimelinePage = () => {
               <Gap $size="16px">
                 <div style={{ margin: "auto", display: "inline-block" }}>
                   <Avatar
-                    $url={displayingUser?.avatar || currentUser?.avatar}
+                    $src={displayingUser?.avatar || currentUser?.avatar}
                     $rounded
                     $size="96px"
-                    style={{ marginBottom: 0 }}
                   />
                 </div>
                 <h1>

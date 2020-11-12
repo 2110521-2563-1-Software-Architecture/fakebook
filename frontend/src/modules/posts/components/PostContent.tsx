@@ -28,7 +28,7 @@ const PostContent = ({
         <Padded $bottom="8px">
           <Flex $space="16px" $align="center">
             <Link to={`/user/${username}`}>
-              <Avatar $url={avatar} $rounded $size="48px" />
+              <Avatar $src={avatar} $rounded $size="48px" />
             </Link>
             <Link to={`/user/${username}`}>
               <h3>{fullname}</h3>

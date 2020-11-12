@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { isEmpty } from "lodash";
 import { getCurrentUser } from "modules/auth/selectors";
 import { emailRegex } from "common/constants";
+import { JSONtoFormData } from "common/formdata";
 import {
   Card,
   Container,
@@ -16,6 +17,7 @@ import {
   Button,
   SecondaryButton,
   Flex,
+  Avatar,
 } from "common/components";
 import AppBar from "common/components/AppBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -33,12 +35,20 @@ const disableButton = ({ fullname, email }: FormValues) => {
   return false;
 };
 
+const displayAvatarFile = (file: string | File) => {
+  if (file instanceof File) {
+    return URL.createObjectURL(file);
+  }
+  return file;
+};
+
 const EditProfilePage = () => {
   const currentUser = useSelector(getCurrentUser);
   const dispatch = useDispatch();
 
   const [fullname, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [avatar, setAvatar] = useState<string | File | null>(null);
 
   useEffect(() => {
     if (currentUser?.fullname) setFullName(currentUser?.fullname);
@@ -46,10 +56,19 @@ const EditProfilePage = () => {
   }, [currentUser]);
 
   const editClick = useCallback(() => {
-    Axios.put("/api/user/edit", {
+    const data = {
       _id: currentUser?._id,
       fullname,
       email,
+    };
+    let formData = JSONtoFormData(data);
+    formData.append("avatar", avatar);
+
+    Axios({
+      method: "PUT",
+      url: "/api/user/edit",
+      headers: { "Content-Type": "multipart/form-data" },
+      data: formData,
     })
       .then((res) => {
         if (res.data.success) {
@@ -57,18 +76,19 @@ const EditProfilePage = () => {
             title: "Success",
             text: "Your profile has been edited",
           });
+          // Edit Current User in Redux Store
+          dispatch(
+            setCurrentUser({
+              ...currentUser,
+              fullname,
+              email,
+              avatar: res.data.avatar,
+            })
+          );
         }
-        // Edit Current User in Redux Store
-        dispatch(
-          setCurrentUser({
-            ...currentUser,
-            fullname,
-            email,
-          })
-        );
       })
       .catch((err) => console.log(err));
-  }, [fullname, email]);
+  }, [fullname, email, avatar]);
 
   const changeFullName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setFullName(e.target.value);
@@ -77,6 +97,10 @@ const EditProfilePage = () => {
   const changeEmail = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   }, []);
+
+  const changeProfilePic = (e) => {
+    setAvatar(e.target.files[0]);
+  };
 
   return (
     <>
@@ -93,28 +117,50 @@ const EditProfilePage = () => {
         </Flex>
         <Card>
           <Padded $all="16px">
-            <Gap $size="16px">
-              <Input
-                label="Full Name"
-                type="text"
-                placeholder="Full Name"
-                value={fullname}
-                onChange={changeFullName}
-              />
-              <Input
-                label="Email"
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={changeEmail}
-              />
-              <Button
-                onClick={editClick}
-                disabled={disableButton({ fullname, email })}
-              >
-                Confirm
-              </Button>
-            </Gap>
+            <form>
+              <Padded $y="32px">
+                <Gap $size="16px" style={{ textAlign: "center" }}>
+                  <Avatar
+                    $size="96px"
+                    $src={
+                      (avatar && displayAvatarFile(avatar)) ||
+                      currentUser?.avatar
+                    }
+                    $rounded
+                    style={{ marginLeft: "auto", marginRight: "auto" }}
+                  />
+                  <input
+                    type="file"
+                    name="avatar"
+                    accept="image/png, image/jpeg"
+                    onChange={changeProfilePic}
+                  />
+                </Gap>
+              </Padded>
+              <Gap $size="16px">
+                <Input
+                  label="Full Name"
+                  type="text"
+                  placeholder="Full Name"
+                  value={fullname}
+                  onChange={changeFullName}
+                />
+                <Input
+                  label="Email"
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={changeEmail}
+                />
+                <Button
+                  onClick={editClick}
+                  disabled={disableButton({ fullname, email })}
+                  type="button"
+                >
+                  Confirm
+                </Button>
+              </Gap>
+            </form>
           </Padded>
         </Card>
       </Container>
