@@ -1,8 +1,10 @@
 import { useDispatch } from "react-redux";
 import Axios from "axios";
+import initHttp from "common/http";
 import {
   login as loginAction,
   logout as logoutAction,
+  setCurrentUser,
 } from "modules/auth/actions";
 
 export const useAuth = () => {
@@ -14,7 +16,13 @@ export const useAuth = () => {
     })
       .then((res) => {
         localStorage.setItem("at", res.data.access_token);
+        // Re-init
+        initHttp();
+
         dispatch(loginAction());
+        Axios.get(`/api/user/me`).then((res) => {
+          dispatch(setCurrentUser(res.data));
+        });
       })
       .catch(() => {
         dispatch(logoutAction());

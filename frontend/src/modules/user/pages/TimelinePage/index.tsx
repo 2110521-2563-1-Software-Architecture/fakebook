@@ -1,56 +1,89 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Axios from "axios";
-import { Button, Container, Padded } from "common/components";
-import { Link, useParams } from "react-router-dom";
+import { Container, Padded, AppBar, Gap, Avatar } from "common/components";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getCurrentUser } from "modules/auth/selectors";
 import { User } from "common/types";
-import AppBar from "common/components/AppBar";
-import Timeline from "modules/user/components/Timeline";
+import Timeline from "./components/Timeline";
 import { narrow } from "common/styles/container";
-
-import { postSet1 } from "modules/user/mocks/posts";
+import { Post } from "common/types";
+import AddPost from "./components/AddPost";
 
 const TimelinePage = () => {
   const { username: usernameParam } = useParams();
+  const [posts, setPosts] = useState<Post[]>([]);
   const [displayingUser, setDisplayingUser] = useState<User | undefined>();
+
+  const currentUser = useSelector(getCurrentUser);
+
+  const isMyPage = usernameParam
+    ? usernameParam === currentUser?.username
+    : true;
+
   useEffect(() => {
+    // Get User
     if (usernameParam) {
       Axios.get(`/api/user/${usernameParam}`)
-        .then((req) => {
-          if (req.data) {
-            setDisplayingUser(req.data);
+        .then((res) => {
+          if (res.data) {
+            setDisplayingUser(res.data);
           }
         })
         .catch((err) => {
           console.log(err);
         });
     }
-  }, []);
 
-  const currentUser = useSelector(getCurrentUser);
-  const isMyPage = usernameParam
-    ? usernameParam === currentUser?.username
-    : true;
+    // Get Posts
+    const getPosts = async () => {
+      const res = await Axios.get(
+        `/api/user/posts/${usernameParam || currentUser?.username}`
+      );
+      if (res.data) {
+        setPosts(res.data.posts);
+      }
+    };
+    getPosts();
+  }, [usernameParam, currentUser]);
 
-  console.log(isMyPage);
+  const addPost = useCallback(
+    (post) => {
+      const appendList = [post, ...posts];
+      setPosts(appendList);
+    },
+    [currentUser, posts]
+  );
 
   return (
     <>
       <AppBar />
       <Padded $bottom="128px">
         <Container $maxWidth={narrow}>
-          {isMyPage ? (
+          <Padded $top="48px">
+            <div style={{ textAlign: "center", paddingBottom: "16px" }}>
+              <Gap $size="16px">
+                <div style={{ margin: "auto", display: "inline-block" }}>
+                  <Avatar
+                    $src={
+                      isMyPage ? currentUser?.avatar : displayingUser?.avatar
+                    }
+                    $rounded
+                    $size="96px"
+                  />
+                </div>
+                <h1>
+                  {isMyPage ? currentUser?.fullname : displayingUser?.fullname}
+                </h1>
+              </Gap>
+            </div>
+          </Padded>
+          {isMyPage && (
             <Padded $bottom="32px">
-              <h1>Hello, {currentUser?.fullname}</h1>
-              <Link to="/user/edit">
-                <Button>Edit Profile</Button>
-              </Link>
+              <AddPost callback={addPost} />
             </Padded>
-          ) : (
-            <h1>{displayingUser?.fullname}</h1>
           )}
-          <Timeline posts={postSet1} />
+          <Timeline posts={posts} />
         </Container>
       </Padded>
     </>

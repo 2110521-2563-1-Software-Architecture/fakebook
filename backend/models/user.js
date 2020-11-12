@@ -34,8 +34,21 @@ UserSchema.plugin(uniqueValidator, {
   type: "",
   message: "That {PATH} is already taken.",
 });
+
 UserSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };
 
-module.exports = mongoose.model("User", UserSchema);
+UserSchema.statics.getHashPassword = function (password, salt) {
+  return bcrypt.hashSync(password, salt);
+};
+
+UserSchema.statics.genSalt = function () {
+  return bcrypt.genSaltSync();
+};
+
+UserSchema.statics.findByUsername = function (username, cb) {
+  return this.findOne({ username }, cb);
+};
+
+module.exports = mongoose.model("UserSchema", UserSchema, "users");

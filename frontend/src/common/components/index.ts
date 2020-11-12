@@ -1,5 +1,6 @@
 import AppBar from "./AppBar";
 import Avatar from "./Avatar";
+import Box from "./Box";
 import Button from "./Button";
 import SecondaryButton from "./SecondaryButton";
 import Card from "./Card";
@@ -10,13 +11,17 @@ import Grid from "./Grid";
 import Input from "./Input";
 import Link from "./Link";
 import Margin from "./Margin";
+import Modal from "./Modal";
+import Overlay from "./Overlay";
 import Padded from "./Padded";
 import Paragraph from "./Paragraph";
 import Separator from "./Separator";
+import Textarea from "./Textarea";
 
 export {
   AppBar,
   Avatar,
+  Box,
   Button,
   SecondaryButton,
   Card,
@@ -27,7 +32,10 @@ export {
   Input,
   Link,
   Margin,
+  Modal,
+  Overlay,
   Padded,
   Paragraph,
   Separator,
+  Textarea,
 };
