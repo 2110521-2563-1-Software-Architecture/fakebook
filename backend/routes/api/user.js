@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/user");
+const Post = require("../../models/post");
+const ObjectId = require("mongoose").Types.ObjectId;
 const { errorResponse } = require("../../utils/error");
 const { authenticateToken } = require("../../middlewares/auth");
 const Multer = require("multer");
@@ -111,10 +113,10 @@ router.put(
         }
       }
 
-      data = {
+      let data = {
         ...req.body,
-        avatar: url,
       };
+      if (url) data = { ...data, avatar: url };
 
       const update = {
         $set: data,

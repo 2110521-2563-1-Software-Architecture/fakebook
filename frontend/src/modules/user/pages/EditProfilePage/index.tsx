@@ -62,7 +62,7 @@ const EditProfilePage = () => {
       email,
     };
     let formData = JSONtoFormData(data);
-    formData.append("avatar", avatar);
+    if (avatar) formData.append("avatar", avatar);
 
     Axios({
       method: "PUT",
@@ -82,7 +82,7 @@ const EditProfilePage = () => {
               ...currentUser,
               fullname,
               email,
-              avatar: res.data.avatar,
+              avatar: res.data.user.avatar,
             })
           );
         }

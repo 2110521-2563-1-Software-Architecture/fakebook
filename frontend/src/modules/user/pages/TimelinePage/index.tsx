@@ -65,7 +65,9 @@ const TimelinePage = () => {
               <Gap $size="16px">
                 <div style={{ margin: "auto", display: "inline-block" }}>
                   <Avatar
-                    $src={displayingUser?.avatar || currentUser?.avatar}
+                    $src={
+                      isMyPage ? currentUser?.avatar : displayingUser?.avatar
+                    }
                     $rounded
                     $size="96px"
                   />
