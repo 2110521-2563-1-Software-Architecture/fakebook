@@ -119,8 +119,10 @@ router.put(
       const update = {
         $set: data,
       };
-      await User.findByIdAndUpdate(req.user._id, update, { new: true });
-      res.json({ success: true });
+      const updatedUser = await User.findByIdAndUpdate(req.user._id, update, {
+        new: true,
+      });
+      res.json({ success: true, user: updatedUser });
     } catch (err) {
       res.status(400).json(errorResponse(err));
     }

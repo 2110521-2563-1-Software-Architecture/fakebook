@@ -6,6 +6,7 @@ const SharedPost = require("../../models/sharedPost");
 const { errorResponse } = require("../../utils/error");
 const Multer = require("multer");
 const gcsMiddlewares = require("../../middlewares/googleCloudStorage");
+const { isEmpty, isNil } = require("lodash");
 
 const multer = Multer({
   storage: Multer.MemoryStorage,
@@ -19,20 +20,38 @@ router.post(
   "/new",
   [
     authenticateToken,
-    body("userId").notEmpty(),
-    body("username").notEmpty(),
-    body("dateTime").notEmpty(),
-    body("fullname").notEmpty(),
-    body("content").if(body("media").notEmpty()).notEmpty(),
+    // body("userId").notEmpty(),
+    // body("username").notEmpty(),
+    // body("dateTime").notEmpty(),
+    // body("fullname").notEmpty(),
+    // body("content").if(body("media").notEmpty()).notEmpty(),
     multer.single("media"),
     gcsMiddlewares.sendUploadToGCS,
   ],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json(errorResponse(errors.array()));
+    if (
+      isEmpty(req.body.userId) &&
+      isEmpty(req.body.username) &&
+      isEmpty(req.body.dateTime) &&
+      isEmpty(req.body.fullname)
+    ) {
+      res.status(400).json(
+        errorResponse({
+          message: "Bad Request",
+        })
+      );
+      return;
+    }
+    if (isEmpty(req.body.content) && isNil(req.file)) {
+      res.status(400).json(
+        errorResponse({
+          message: "Either content or media is required.",
+        })
+      );
+      return;
     }
 
+    console.log(req.body.userId);
     if (req.user._id !== req.body.userId) {
       res.status(401).json(
         errorResponse({
@@ -64,7 +83,7 @@ router.post(
 
     try {
       const newPost = await post.save();
-      res.status(201).json({ success: true, _id: newPost._id });
+      res.status(201).json({ success: true, post: newPost });
     } catch (err) {
       res.status(400).json(errorResponse(err));
     }
@@ -117,7 +136,7 @@ router.post(
         });
 
         const newPost = await post.save();
-        res.status(201).json({ success: true, _id: newPost._id });
+        res.status(201).json({ success: true, post: newPost });
       } else {
         res
           .status(400)
