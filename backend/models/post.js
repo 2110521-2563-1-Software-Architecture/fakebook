@@ -1,23 +1,8 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const PostSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-    lowercase: true,
-    required: true,
-  },
-  fullname: {
-    type: String,
-    required: true,
-  },
-  avatar: {
-    type: String,
-    required: false,
-  },
+  userId: { type: Schema.Types.ObjectId, ref: "UserSchema", required: true },
   content: {
     type: String,
     required: false,
@@ -30,7 +15,11 @@ const PostSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  sourcePostId: {
+    type: Schema.Types.ObjectId,
+    ref: "PostSchema",
+    required: false,
+  },
 });
-
 
 module.exports = mongoose.model("PostSchema", PostSchema, "posts");

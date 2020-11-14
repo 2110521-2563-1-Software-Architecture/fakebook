@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const uniqueValidator = require("mongoose-unique-validator");
+const Schema = mongoose.Schema;
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -28,6 +29,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  posts: [{ type: Schema.Types.ObjectId, ref: "PostSchema" }],
 });
 
 UserSchema.plugin(uniqueValidator, {
