@@ -4,6 +4,7 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/user");
 const Post = require("../../models/post");
+const SharedPost = require("../../models/sharedPost");
 const ObjectId = require("mongoose").Types.ObjectId;
 const { errorResponse } = require("../../utils/error");
 const { authenticateToken } = require("../../middlewares/auth");
@@ -121,16 +122,46 @@ router.put(
       const update = {
         $set: data,
       };
-      const updatedUser = await User.findByIdAndUpdate(req.user._id, update, {
-        new: true,
-      });
+      const updatedUser = await User.findByIdAndUpdate(req.user._id, update);
       res.json({ success: true, user: updatedUser });
     } catch (err) {
       res.status(400).json(errorResponse(err));
     }
-    // TODO: Edit user information in posts
   }
 );
+
+router.put("/update-posts", authenticateToken, async (req, res) => {
+  // TODO: Edit user information in posts
+  const user = await User.findById(req.user._id);
+  try {
+    const updatedPosts = await Post.updateMany(
+      { userId: user._id },
+      {
+        $set: {
+          fullname: user.fullname,
+          avatar: user.avatar,
+          email: user.email,
+        },
+      }
+    );
+    const updatedSharedPosts = await SharedPost.updateMany(
+      { sourceUserId: user._id },
+      {
+        $set: {
+          sourceFullname: user.fullname,
+          sourceAvatar: user.avatar,
+          sourceEmail: user.email,
+        },
+      }
+    );
+    res.json({
+      updatedPosts,
+      updatedSharedPosts,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 // Get posts of a user
 router.get("/posts/:username", async (req, res) => {
