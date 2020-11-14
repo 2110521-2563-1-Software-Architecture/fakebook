@@ -8,6 +8,8 @@ const Multer = require("multer");
 const gcsMiddlewares = require("../../middlewares/googleCloudStorage");
 const { isEmpty, isNil } = require("lodash");
 const dayjs = require("dayjs");
+const cacheMiddleware = require("../../middlewares/cache");
+const { authenticateToken } = require("../../middlewares/auth");
 
 const multer = Multer({
   storage: Multer.MemoryStorage,
@@ -15,7 +17,6 @@ const multer = Multer({
     fileSize: 10 * 1024 * 1024, // Maximum file size is 10MB
   },
 });
-const { authenticateToken } = require("../../middlewares/auth");
 
 router.post(
   "/new",
@@ -78,6 +79,28 @@ router.post("/share/:postId", authenticateToken, async (req, res) => {
       res.status(400).json(errorResponse({ message: "Post is not available" }));
     }
   } catch (err) {
+    res.status(400).json(errorResponse(err));
+    console.log(err);
+  }
+});
+
+// Get posts of a user
+router.get("/get/:username", cacheMiddleware(15), async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username })
+      .select("+posts")
+      .populate({
+        path: "posts",
+        populate: {
+          path: "sourcePostId",
+          populate: {
+            path: "userId",
+          },
+        },
+      });
+    res.status(200).json({ posts: user.posts.reverse() });
+  } catch (err) {
+    console.log(err);
     res.status(400).json(errorResponse(err));
   }
 });

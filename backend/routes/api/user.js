@@ -8,6 +8,7 @@ const { errorResponse } = require("../../utils/error");
 const { authenticateToken } = require("../../middlewares/auth");
 const Multer = require("multer");
 const gcsMiddlewares = require("../../middlewares/googleCloudStorage");
+const cacheMiddleware = require("../../middlewares/cache");
 
 const multer = Multer({
   storage: Multer.MemoryStorage,
@@ -27,7 +28,7 @@ router.get("/me", authenticateToken, async (req, res) => {
 });
 
 // Get a User's Public Information
-router.get("/:username", async (req, res) => {
+router.get("/:username", cacheMiddleware(15), async (req, res) => {
   try {
     const user = await User.findByUsername(req.params.username);
     res.json({
@@ -111,31 +112,14 @@ router.put(
       const update = {
         $set: data,
       };
-      const updatedUser = await User.findByIdAndUpdate(req.user._id, update);
+      const updatedUser = await User.findByIdAndUpdate(req.user._id, update, {
+        new: true,
+      });
       res.json({ success: true, user: updatedUser });
     } catch (err) {
       res.status(400).json(errorResponse(err));
     }
   }
 );
-
-// Get posts of a user
-router.get("/posts/:username", async (req, res) => {
-  try {
-    const user = await User.findOne({ username: req.params.username }).populate(
-      {
-        path: "posts",
-        populate: {
-          path: "sourcePostId",
-        },
-      }
-    );
-    console.log(user);
-    res.status(200).json({ posts: user.posts.reverse() });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json(errorResponse(err));
-  }
-});
 
 module.exports = router;

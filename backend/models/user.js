@@ -29,7 +29,15 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  posts: [{ type: Schema.Types.ObjectId, ref: "PostSchema" }],
+  posts: {
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "PostSchema",
+      },
+    ],
+    select: false,
+  },
 });
 
 UserSchema.plugin(uniqueValidator, {
