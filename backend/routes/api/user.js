@@ -4,11 +4,11 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/user");
 const Post = require("../../models/post");
-const ObjectId = require("mongoose").Types.ObjectId;
 const { errorResponse } = require("../../utils/error");
 const { authenticateToken } = require("../../middlewares/auth");
 const Multer = require("multer");
 const gcsMiddlewares = require("../../middlewares/googleCloudStorage");
+const cacheMiddleware = require("../../middlewares/cache");
 
 const multer = Multer({
   storage: Multer.MemoryStorage,
@@ -28,7 +28,7 @@ router.get("/me", authenticateToken, async (req, res) => {
 });
 
 // Get a User's Public Information
-router.get("/:username", async (req, res) => {
+router.get("/:username", cacheMiddleware(15), async (req, res) => {
   try {
     const user = await User.findByUsername(req.params.username);
     res.json({
@@ -94,15 +94,6 @@ router.put(
   [authenticateToken, multer.single("avatar"), gcsMiddlewares.sendUploadToGCS],
   async (req, res) => {
     try {
-      if (req.body._id !== req.user._id) {
-        res.status(401).json(
-          errorResponse({
-            message: "You are not allowed to perform this action.",
-          })
-        );
-        return;
-      }
-
       //Upload Media
       let url = null;
       if (req.file) {
@@ -128,24 +119,7 @@ router.put(
     } catch (err) {
       res.status(400).json(errorResponse(err));
     }
-    // TODO: Edit user information in posts
   }
 );
-
-// Get posts of a user
-router.get("/posts/:username", async (req, res) => {
-  try {
-    await mongoose.connection.db
-      .collection("posts")
-      .find({ username: req.params.username })
-      .toArray()
-      .then((posts) => {
-        res.status(200).json({ posts: posts.reverse() });
-      });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json(errorResponse(err));
-  }
-});
 
 module.exports = router;

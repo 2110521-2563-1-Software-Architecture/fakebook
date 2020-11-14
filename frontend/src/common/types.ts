@@ -15,11 +15,16 @@ export type Post = {
   dateTime: string;
   content?: string;
   media?: string;
-  sourcePostId: string;
-  sourceUsername: string;
-  sourceFullname: string;
-  sourceAvatar?: string;
-  sourceDateTime: string;
-  sourceContent: string;
-  sourceMedia?: string;
+  sourcePostId?: {
+    _id: string;
+    userId: {
+      _id: string;
+      username: string;
+      fullname: string;
+      avatar?: string;
+    };
+    dateTime: string;
+    content?: string;
+    media?: string;
+  };
 };

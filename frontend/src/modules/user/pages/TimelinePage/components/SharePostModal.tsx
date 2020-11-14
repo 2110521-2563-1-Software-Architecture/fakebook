@@ -16,8 +16,17 @@ import Axios from "axios";
 import Swal from "sweetalert2";
 import { getChosenPost } from "modules/posts/selectors";
 import PostContent from "modules/posts/components/PostContent";
+import { User } from "common/types";
 
-const SharePostModal = () => {
+type SharePostModalProps = {
+  callback?: (Post) => void;
+  user: User;
+};
+
+const SharePostModal = ({
+  callback,
+  user: displayingUser,
+}: SharePostModalProps) => {
   const currentUser = useSelector(getCurrentUser);
   const chosenPost = useSelector(getChosenPost);
   const dispatch = useDispatch();
@@ -34,21 +43,24 @@ const SharePostModal = () => {
 
   const sharePost = useCallback(() => {
     const sharingPost = {
-      userId: currentUser._id,
-      username: currentUser.username,
-      fullname: currentUser.fullname,
-      avatar: currentUser.avatar,
       content,
       dateTime: dayjs(),
     };
     Axios.post(
-      `/api/post/share/${chosenPost!.sourcePostId || chosenPost!._id}`,
+      `/api/post/share/${chosenPost!.sourcePostId?._id || chosenPost!._id}`,
       sharingPost
-    ).then(() => {
+    ).then((res) => {
       Swal.fire({
         icon: "success",
         title: "Success",
       });
+      console.log(currentUser._id, displayingUser._id);
+      if (callback && currentUser._id === displayingUser._id) {
+        callback({
+          ...sharingPost,
+          sourcePostId: chosenPost,
+        });
+      }
       setContent("");
       hideSharingModal();
     });
@@ -78,13 +90,24 @@ const SharePostModal = () => {
           <Box>
             {chosenPost && (
               <PostContent
-                postId={chosenPost.sourcePostId || chosenPost._id}
-                username={chosenPost.sourceUsername || chosenPost.username}
-                fullname={chosenPost.sourceFullname || chosenPost.fullname}
-                avatar={chosenPost.sourceAvatar || chosenPost.avatar}
-                dateTime={chosenPost.sourceDateTime || chosenPost.dateTime}
-                content={chosenPost.sourceContent || chosenPost.content}
-                media={chosenPost.sourceMedia || chosenPost.media}
+                postId={chosenPost.sourcePostId?._id || chosenPost._id}
+                username={
+                  chosenPost.sourcePostId?.userId.username ||
+                  displayingUser?.username
+                }
+                fullname={
+                  chosenPost.sourcePostId?.userId.fullname ||
+                  displayingUser?.fullname
+                }
+                avatar={
+                  chosenPost.sourcePostId?.userId.avatar ||
+                  displayingUser?.avatar
+                }
+                dateTime={
+                  chosenPost.sourcePostId?.dateTime || chosenPost.dateTime
+                }
+                content={chosenPost.sourcePostId?.content || chosenPost.content}
+                media={chosenPost.sourcePostId?.media || chosenPost.media}
               />
             )}
           </Box>

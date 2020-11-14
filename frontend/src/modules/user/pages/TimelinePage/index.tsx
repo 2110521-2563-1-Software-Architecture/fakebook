@@ -37,11 +37,13 @@ const TimelinePage = () => {
 
     // Get Posts
     const getPosts = async () => {
-      const res = await Axios.get(
-        `/api/user/posts/${usernameParam || currentUser?.username}`
-      );
-      if (res.data) {
-        setPosts(res.data.posts);
+      if (currentUser) {
+        const res = await Axios.get(
+          `/api/post/get/${usernameParam || currentUser?.username}`
+        );
+        if (res.data) {
+          setPosts(res.data.posts);
+        }
       }
     };
     getPosts();
@@ -83,7 +85,11 @@ const TimelinePage = () => {
               <AddPost callback={addPost} />
             </Padded>
           )}
-          <Timeline posts={posts} />
+          <Timeline
+            user={isMyPage ? currentUser : displayingUser}
+            posts={posts}
+            callback={addPost}
+          />
         </Container>
       </Padded>
     </>
