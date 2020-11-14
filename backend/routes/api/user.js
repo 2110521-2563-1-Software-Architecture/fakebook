@@ -4,12 +4,11 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/user");
 const Post = require("../../models/post");
-const SharedPost = require("../../models/sharedPost");
-const ObjectId = require("mongoose").Types.ObjectId;
 const { errorResponse } = require("../../utils/error");
 const { authenticateToken } = require("../../middlewares/auth");
 const Multer = require("multer");
 const gcsMiddlewares = require("../../middlewares/googleCloudStorage");
+const cacheMiddleware = require("../../middlewares/cache");
 
 const multer = Multer({
   storage: Multer.MemoryStorage,
@@ -29,7 +28,7 @@ router.get("/me", authenticateToken, async (req, res) => {
 });
 
 // Get a User's Public Information
-router.get("/:username", async (req, res) => {
+router.get("/:username", cacheMiddleware(15), async (req, res) => {
   try {
     const user = await User.findByUsername(req.params.username);
     res.json({
@@ -95,15 +94,6 @@ router.put(
   [authenticateToken, multer.single("avatar"), gcsMiddlewares.sendUploadToGCS],
   async (req, res) => {
     try {
-      if (req.body._id !== req.user._id) {
-        res.status(401).json(
-          errorResponse({
-            message: "You are not allowed to perform this action.",
-          })
-        );
-        return;
-      }
-
       //Upload Media
       let url = null;
       if (req.file) {
@@ -122,61 +112,14 @@ router.put(
       const update = {
         $set: data,
       };
-      const updatedUser = await User.findByIdAndUpdate(req.user._id, update);
+      const updatedUser = await User.findByIdAndUpdate(req.user._id, update, {
+        new: true,
+      });
       res.json({ success: true, user: updatedUser });
     } catch (err) {
       res.status(400).json(errorResponse(err));
     }
   }
 );
-
-router.put("/update-posts", authenticateToken, async (req, res) => {
-  // TODO: Edit user information in posts
-  const user = await User.findById(req.user._id);
-  try {
-    const updatedPosts = await Post.updateMany(
-      { userId: user._id },
-      {
-        $set: {
-          fullname: user.fullname,
-          avatar: user.avatar,
-          email: user.email,
-        },
-      }
-    );
-    const updatedSharedPosts = await SharedPost.updateMany(
-      { sourceUserId: user._id },
-      {
-        $set: {
-          sourceFullname: user.fullname,
-          sourceAvatar: user.avatar,
-          sourceEmail: user.email,
-        },
-      }
-    );
-    res.json({
-      updatedPosts,
-      updatedSharedPosts,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-// Get posts of a user
-router.get("/posts/:username", async (req, res) => {
-  try {
-    await mongoose.connection.db
-      .collection("posts")
-      .find({ username: req.params.username })
-      .toArray()
-      .then((posts) => {
-        res.status(200).json({ posts: posts.reverse() });
-      });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json(errorResponse(err));
-  }
-});
 
 module.exports = router;

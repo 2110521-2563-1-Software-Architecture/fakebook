@@ -3,13 +3,14 @@ import { useDispatch } from "react-redux";
 import { setChosenPost } from "modules/posts/actions";
 import { Card, Box, Padded, Button } from "common/components";
 import PostContent from "./PostContent";
-import { Post as PostType } from "common/types";
+import { Post as PostType, User } from "common/types";
 
 type PostProps = {
+  user: User;
   post: PostType;
 };
 
-const Post = ({ post }: PostProps) => {
+const Post = ({ user, post }: PostProps) => {
   const dispatch = useDispatch();
 
   const showSharingModal = (post) => () => {
@@ -21,9 +22,9 @@ const Post = ({ post }: PostProps) => {
     <Card>
       <PostContent
         postId={post._id}
-        username={post.username}
-        fullname={post.fullname}
-        avatar={post.avatar}
+        username={user.username}
+        fullname={user.fullname}
+        avatar={user.avatar}
         dateTime={post.dateTime}
         content={post.content}
         media={post.sourcePostId ? undefined : post.media}
@@ -32,13 +33,13 @@ const Post = ({ post }: PostProps) => {
         <Padded $all="16px" $top="0">
           <Box>
             <PostContent
-              postId={post.sourcePostId}
-              username={post.sourceUsername}
-              fullname={post.sourceFullname}
-              avatar={post.sourceAvatar}
-              dateTime={post.sourceDateTime}
-              content={post.sourceContent}
-              media={post.sourceMedia}
+              postId={post.sourcePostId._id}
+              username={post.sourcePostId.userId.username}
+              fullname={post.sourcePostId.userId.fullname}
+              avatar={post.sourcePostId.userId.avatar}
+              dateTime={post.sourcePostId.dateTime}
+              content={post.sourcePostId.content}
+              media={post.sourcePostId.media}
             />
           </Box>
         </Padded>

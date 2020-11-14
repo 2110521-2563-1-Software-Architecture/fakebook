@@ -14,7 +14,6 @@ import {
   Flex,
   Avatar,
 } from "common/components";
-import dayjs from "dayjs";
 
 type FormValues = {
   content: string;
@@ -39,12 +38,7 @@ const AddPostPage = ({ callback }: { callback?: (Post) => void }) => {
 
   const postSubmit = useCallback(() => {
     const post = {
-      userId: currentUser._id,
-      username: currentUser.username,
-      fullname: currentUser.fullname,
-      avatar: currentUser.avatar,
       content,
-      dateTime: dayjs(),
     };
 
     let formData = JSONtoFormData(post);
