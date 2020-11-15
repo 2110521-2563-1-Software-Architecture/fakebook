@@ -1,11 +1,9 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/user");
-const Post = require("../../models/post");
 const { errorResponse } = require("../../utils/error");
-const { authenticateToken } = require("../../middlewares/auth");
+const auth = require("../../middlewares/auth");
 const Multer = require("multer");
 const gcsMiddlewares = require("../../middlewares/googleCloudStorage");
 const cacheMiddleware = require("../../middlewares/cache");
@@ -18,9 +16,9 @@ const multer = Multer({
 });
 
 // Get Current User
-router.get("/me", authenticateToken, async (req, res) => {
+router.get("/me", auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.session.user._id);
     res.json(user);
   } catch (err) {
     res.status(401).json(errorResponse(err));
@@ -91,7 +89,7 @@ router.post(
 // Edit User Infomation
 router.put(
   "/edit",
-  [authenticateToken, multer.single("avatar"), gcsMiddlewares.sendUploadToGCS],
+  [auth, multer.single("avatar"), gcsMiddlewares.sendUploadToGCS],
   async (req, res) => {
     try {
       //Upload Media
@@ -112,9 +110,13 @@ router.put(
       const update = {
         $set: data,
       };
-      const updatedUser = await User.findByIdAndUpdate(req.user._id, update, {
-        new: true,
-      });
+      const updatedUser = await User.findByIdAndUpdate(
+        req.session.user._id,
+        update,
+        {
+          new: true,
+        }
+      );
       res.json({ success: true, user: updatedUser });
     } catch (err) {
       res.status(400).json(errorResponse(err));

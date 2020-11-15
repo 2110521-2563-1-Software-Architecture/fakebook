@@ -66,7 +66,7 @@ const StyledAppBar = () => {
               <AppBarText>Fakebook</AppBarText>
             </LinkComponent>
             <form onSubmit={onFormSubmit} style={{ marginBottom: 0 }}>
-              <SearchField name="search" />
+              <SearchField name="search" placeholder="Search User" />
             </form>
           </Flex>
           <Flex $space="8px" $freeWidth>

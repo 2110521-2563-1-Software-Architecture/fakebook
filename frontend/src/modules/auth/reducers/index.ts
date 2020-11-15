@@ -1,7 +1,7 @@
 import { SET_AUTH, SET_CURRENT_USER } from "common/actionTypes";
 
 const initialState = {
-  loggedIn: undefined,
+  loggedIn: null,
   currentUser: null,
 };
 

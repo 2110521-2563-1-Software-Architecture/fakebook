@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { body, validationResult } = require("express-validator");
 const Post = require("../../models/post");
 const User = require("../../models/user");
 const { errorResponse } = require("../../utils/error");
@@ -9,7 +8,7 @@ const gcsMiddlewares = require("../../middlewares/googleCloudStorage");
 const { isEmpty, isNil } = require("lodash");
 const dayjs = require("dayjs");
 const cacheMiddleware = require("../../middlewares/cache");
-const { authenticateToken } = require("../../middlewares/auth");
+const auth = require("../../middlewares/auth");
 
 const multer = Multer({
   storage: Multer.MemoryStorage,
@@ -20,7 +19,7 @@ const multer = Multer({
 
 router.post(
   "/new",
-  [authenticateToken, multer.single("media"), gcsMiddlewares.sendUploadToGCS],
+  [auth, multer.single("media"), gcsMiddlewares.sendUploadToGCS],
   async (req, res) => {
     if (isEmpty(req.body.content) && isNil(req.file)) {
       res.status(400).json(
@@ -42,12 +41,14 @@ router.post(
     }
 
     const post = new Post({
-      userId: req.user._id,
+      userId: req.session.user._id,
       content: req.body.content,
       dateTime: dayjs(),
       media: url,
     });
-    await User.findByIdAndUpdate(req.user._id, { $push: { posts: post._id } });
+    await User.findByIdAndUpdate(req.session.user._id, {
+      $push: { posts: post._id },
+    });
 
     try {
       const newPost = await post.save();
@@ -58,20 +59,20 @@ router.post(
   }
 );
 
-router.post("/share/:postId", authenticateToken, async (req, res) => {
+router.post("/share/:postId", auth, async (req, res) => {
   try {
     const sourcePost = await Post.findById(req.params.postId);
 
     if (sourcePost) {
       const post = new Post({
-        userId: req.user._id,
+        userId: req.session.user._id,
         content: req.body.content,
         dateTime: dayjs(),
         sourcePostId: req.params.postId,
       });
 
       const newPost = await post.save();
-      await User.findByIdAndUpdate(req.user._id, {
+      await User.findByIdAndUpdate(req.session.user._id, {
         $push: { posts: post._id },
       });
       res.status(201).json({ success: true, post: newPost });

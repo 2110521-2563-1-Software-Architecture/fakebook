@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const User = require("../../models/user");
 const { errorResponse } = require("../../utils/error");
-const { generateAccessToken } = require("../../middlewares/auth");
 
 router.post("/login", (req, res) => {
   var username = req.body.username;
@@ -20,13 +19,19 @@ router.post("/login", (req, res) => {
           .status(401)
           .json(errorResponse({ message: "Incorrect username or password." }));
       } else {
-        const token = generateAccessToken({
-          username: req.body.username,
-          _id: user._id.toString(),
-        });
-        res.status(200).json({ access_token: token });
+        req.session.user = {
+          _id: user._id,
+          username: user.username,
+        };
+        res.status(200).json("Logged in");
       }
     });
+});
+
+router.post("/logout", (req, res) => {
+  req.session.destroy();
+  res.clearCookie("user_sid");
+  res.status(200).json("Logged out");
 });
 
 module.exports = router;

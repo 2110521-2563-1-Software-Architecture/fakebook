@@ -15,10 +15,6 @@ export const useAuth = () => {
       password,
     })
       .then((res) => {
-        localStorage.setItem("at", res.data.access_token);
-        // Re-init
-        initHttp();
-
         dispatch(loginAction());
         Axios.get(`/api/user/me`).then((res) => {
           dispatch(setCurrentUser(res.data));
@@ -29,7 +25,9 @@ export const useAuth = () => {
       });
   };
   const logout = () => {
-    localStorage.removeItem("at");
+    Axios.post(`/api/auth/logout`).then((res) => {
+      dispatch(setCurrentUser(null));
+    });
     dispatch(logoutAction());
   };
 
