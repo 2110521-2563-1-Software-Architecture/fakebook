@@ -1,6 +1,6 @@
 const dotenv = require("dotenv");
 
-const envFile = ".env";
+const envFile = process.env.NODE_ENV ? `${process.env.NODE_ENV}.env` : ".env";
 dotenv.config({ path: envFile });
 
 const express = require("express");
@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 const mongoose = require("mongoose");
 
 // connect db
-mongoose.connect("mongodb://localhost/softarch", { useNewUrlParser: true });
+mongoose.connect(`${process.env.DATABASE_URL}`, { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
 db.once("open", () => console.log("connected to database"));
