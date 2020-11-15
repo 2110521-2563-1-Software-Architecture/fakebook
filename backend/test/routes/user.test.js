@@ -10,14 +10,14 @@ let mockUser = {
   username: "name123123",
   email: "e@e.com",
   password: "123",
-  subscribed: true,
+  fullname: "Test fullname",
 };
 
 const baseUrl = "/api";
 
 beforeAll(async () => {
   testSession = session(app);
-  const res = await testSession.post("/users").send(mockUser);
+  const res = await testSession.post(`${baseUrl}/user/register`).send(mockUser);
   createdUserId = res.body._id;
 });
 
@@ -40,7 +40,7 @@ describe(`Create User API (POST ${baseUrl}/user/register)`, () => {
   });
   it("should not create a user if some fields are missing", async () => {
     await testSession
-      .post(`${baseUrl}/user/register)`)
+      .post(`${baseUrl}/user/register`)
       .send({ username: "name" })
       .expect(httpStatus.BAD_REQUEST);
   });
@@ -79,5 +79,32 @@ describe(`Login (POST ${baseUrl}/user/login)`, () => {
       .post(`${baseUrl}/auth/login`)
       .send({ username: "name123123", password: "12345" })
       .expect(httpStatus.UNAUTHORIZED);
+  });
+});
+
+describe(`Logout (POST ${baseUrl}/user/logout)`, () => {
+  it("should logout the user", async () => {
+    await testSession
+      .post(`${baseUrl}/auth/login`)
+      .send({ username: "name123123", password: "123" });
+    await testSession.post(`${baseUrl}/auth/logout`);
+    await testSession.get(`${baseUrl}/user/me`).expect(httpStatus.UNAUTHORIZED);
+  });
+});
+
+describe(`Edit User (PUT ${baseUrl}/user/edit)`, () => {
+  it("should edit user data as provided", async () => {
+    await testSession
+      .post(`${baseUrl}/auth/login`)
+      .send({ username: "name123123", password: "123" });
+    const res = await testSession
+      .put(`${baseUrl}/user/edit`)
+      .send({ fullname: "Test 2" });
+    expect(res.body.user.fullname === "Test 2").toBeTruthy();
+    expect(res.body.user.email === "e@e.com").toBeTruthy();
+    await testSession
+      .put(`${baseUrl}/user/edit`)
+      .send({ fullname: "Test fullname" });
+    await testSession.post(`${baseUrl}/auth/logout`);
   });
 });
