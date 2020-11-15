@@ -5,30 +5,32 @@ import { logout } from "modules/auth/actions";
 
 export default () => {
   Axios.defaults.headers.common["Content-Type"] = "application/json";
-  const token = localStorage.getItem("at");
-  if (token) {
-    Axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
-  } else {
-    store.dispatch(logout());
-  }
-
   Axios.interceptors.response.use(
     function (response) {
       return response;
     },
     function (err) {
-      if (err.response) {
-        store.dispatch(
-          showError({
-            errors: {
-              message: err.response.data,
-            },
-          })
-        );
-      }
-      if (err.response.status === 403) {
-        localStorage.removeItem("at");
+      if (err.response.status === 403 || err.response.status === 401) {
+        if (store.getState().auth.loggedIn) {
+          store.dispatch(
+            showError({
+              errors: {
+                message: err.response.data,
+              },
+            })
+          );
+        }
         store.dispatch(logout());
+      } else {
+        if (err.response) {
+          store.dispatch(
+            showError({
+              errors: {
+                message: err.response.data,
+              },
+            })
+          );
+        }
       }
       return Promise.reject(err);
     }

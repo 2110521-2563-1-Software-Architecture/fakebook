@@ -56,9 +56,13 @@ const SharePostModal = ({
       });
       console.log(currentUser._id, displayingUser._id);
       if (callback && currentUser._id === displayingUser._id) {
+        console.log({
+          ...sharingPost,
+          sourcePostId: chosenPost.sourcePostId || chosenPost,
+        });
         callback({
           ...sharingPost,
-          sourcePostId: chosenPost,
+          sourcePostId: chosenPost.sourcePostId || chosenPost,
         });
       }
       setContent("");
