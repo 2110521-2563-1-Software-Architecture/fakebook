@@ -1,37 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../../models/user");
-const { errorResponse } = require("../../utils/error");
+const { login, logout } = require("../../controllers/authController");
 
-router.post("/login", (req, res) => {
-  var username = req.body.username;
-  var password = req.body.password;
+router.post("/login", login);
 
-  User.findOne({ username })
-    .select("+password")
-    .then((user) => {
-      if (!user) {
-        res
-          .status(401)
-          .json(errorResponse({ message: "Incorrect username or password." }));
-      } else if (!user.validPassword(password)) {
-        res
-          .status(401)
-          .json(errorResponse({ message: "Incorrect username or password." }));
-      } else {
-        req.session.user = {
-          _id: user._id,
-          username: user.username,
-        };
-        res.status(200).json("Logged in");
-      }
-    });
-});
-
-router.post("/logout", (req, res) => {
-  req.session.destroy();
-  res.clearCookie("user_sid");
-  res.status(200).json("Logged out");
-});
+router.post("/logout", logout);
 
 module.exports = router;

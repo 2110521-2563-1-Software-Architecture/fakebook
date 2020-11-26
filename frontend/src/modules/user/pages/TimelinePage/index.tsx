@@ -39,7 +39,7 @@ const TimelinePage = () => {
     const getPosts = async () => {
       if (currentUser) {
         const res = await Axios.get(
-          `/api/post/get/${usernameParam || currentUser?.username}`
+          `/api/user/posts/${usernameParam || currentUser?.username}`
         );
         if (res.data) {
           setPosts(res.data.posts);
