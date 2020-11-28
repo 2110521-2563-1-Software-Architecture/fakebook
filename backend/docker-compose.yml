@@ -1,0 +1,58 @@
+version: "3.7"
+
+services:
+  backend:
+    container_name: fakebook-backend
+    image: node:13
+    restart: unless-stopped
+    volumes:
+      - ./:/server/
+      - ./package.json:/server/package.json
+    environment:
+      - DATABASE_URL=mongodb://db:27017
+      - SESSION_SECRET=${SESSION_SECRET}
+      - GCS_KEY_NAME=${GCS_KEY_NAME}
+    command: sh -c 'cd /server && yarn && yarn start'
+    expose:
+      - 5000
+    depends_on:
+      - db
+
+  backend-backup:
+    container_name: fakebook-backend-backup
+    image: node:13
+    restart: unless-stopped
+    volumes:
+      - ./:/server/
+      - ./package.json:/server/package.json
+    environment:
+      - DATABASE_URL=mongodb://db:27017
+      - SESSION_SECRET=${SESSION_SECRET}
+      - GCS_KEY_NAME=${GCS_KEY_NAME}
+    command: sh -c 'cd /server && yarn && yarn start'
+    expose:
+      - 5000
+    depends_on:
+      - backend
+
+  nginx:
+    container_name: fakebook-nginx
+    image: nginx:latest
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/sites-enabled/server.conf:/etc/nginx/sites-enabled/server.conf
+    depends_on:
+      - backend
+      - backend-backup
+    ports:
+      - 80:80
+
+  db:
+    container_name: fakebook-db
+    image: mongo:4
+    restart: unless-stopped
+    volumes:
+      - ./volumes/mongodb:/data/db
+      - ./volumes/mongodb_config:/data/configdb
+    ports:
+      - 27017:27017

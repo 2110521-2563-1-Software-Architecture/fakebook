@@ -11,7 +11,7 @@ const {
   edit,
   getPosts,
 } = require("../../controllers/userController");
-const multer = require("../../helpers/multer");
+const multer = require("../../middlewares/multer");
 
 // Get Current User
 router.get("/me", auth, getCurrentUser);

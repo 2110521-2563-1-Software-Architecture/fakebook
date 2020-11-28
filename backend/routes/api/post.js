@@ -4,7 +4,7 @@ const gcsMiddlewares = require("../../middlewares/googleCloudStorage");
 
 const auth = require("../../middlewares/auth");
 const { post, share, del } = require("../../controllers/postController");
-const multer = require("../../helpers/multer");
+const multer = require("../../middlewares/multer");
 
 router.post(
   "/new",
