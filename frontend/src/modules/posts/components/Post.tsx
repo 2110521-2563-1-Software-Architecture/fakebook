@@ -14,7 +14,6 @@ const Post = ({ user, post }: PostProps) => {
   const dispatch = useDispatch();
 
   const showSharingModal = (post) => () => {
-    console.log("hello");
     dispatch(setChosenPost(post));
   };
 

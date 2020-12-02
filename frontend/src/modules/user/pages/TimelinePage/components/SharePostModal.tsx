@@ -49,25 +49,26 @@ const SharePostModal = ({
     Axios.post(
       `/api/post/share/${chosenPost!.sourcePostId?._id || chosenPost!._id}`,
       sharingPost
-    ).then((res) => {
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-      });
-      console.log(currentUser._id, displayingUser._id);
-      if (callback && currentUser._id === displayingUser._id) {
-        console.log({
-          ...sharingPost,
-          sourcePostId: chosenPost.sourcePostId || chosenPost,
+    )
+      .then((res) => {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
         });
-        callback({
-          ...sharingPost,
-          sourcePostId: chosenPost.sourcePostId || chosenPost,
-        });
-      }
-      setContent("");
-      hideSharingModal();
-    });
+        if (callback && currentUser._id === displayingUser._id) {
+          callback({
+            _id: res.data.post._id,
+            ...sharingPost,
+            sourcePostId: {
+              ...(chosenPost.sourcePostId || chosenPost),
+              userId: chosenPost!.sourcePostId?.userId || displayingUser,
+            },
+          });
+        }
+        setContent("");
+        hideSharingModal();
+      })
+      .catch((err) => console.log(err));
   }, [currentUser, content]);
 
   return (

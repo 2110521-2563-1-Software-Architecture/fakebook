@@ -57,6 +57,7 @@ const AddPostPage = ({ callback }: { callback?: (Post) => void }) => {
         });
         if (callback)
           callback({
+            _id: res.data.post._id,
             ...post,
             media: res.data.post.media,
           });
