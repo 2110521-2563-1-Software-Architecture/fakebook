@@ -30,8 +30,8 @@ services:
       - SESSION_SECRET=${SESSION_SECRET}
       - GCS_KEY_NAME=${GCS_KEY_NAME}
     command: sh -c 'cd /server && yarn && yarn start'
-    expose:
-      - 5000
+    ports:
+      - 5001:5000
     depends_on:
       - backend
 
